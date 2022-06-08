@@ -4,8 +4,8 @@
   "description": "Helper functions",
   "main": "cjs/index.cjs",
   "scripts": {
-    "build:esm": "to-esm cjs/generic-functions.cjs --output esm/ --target esm --update-all",
-    "build:minified": "to-esm cjs/generic-functions.cjs --target esm --bundle dist/test-utils.min.js --output esm/",
+    "build:esm": "to-esm cjs/lib-utils.cjs --output esm/ --target esm",
+    "build:minified": "to-esm cjs/lib-utils.cjs --target esm --bundle dist/lib-utils.min.js --output esm/ --update-all",
     "build:all": "npm run build:esm && npm run build:minified"
   },
   "author": "Patrice Thimothee",
@@ -14,10 +14,10 @@
     "eslinter": "^3.2.1",
     "to-esm": "^2.14.0"
   },
-  "module": "./esm/generic-functions.mjs",
+  "module": "./esm/lib-utils.mjs",
   "type": "module",
   "exports": {
-    "require": "./cjs/generic-functions.cjs",
-    "import": "./esm/generic-functions.mjs"
+    "require": "./cjs/lib-utils.cjs",
+    "import": "./esm/lib-utils.mjs"
   }
 }
