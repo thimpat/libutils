@@ -4,20 +4,20 @@
   "description": "Helper functions",
   "main": "cjs/index.cjs",
   "scripts": {
-    "build:esm": "to-esm cjs/lib-utils.cjs --output esm/ --target esm",
-    "build:minified": "to-esm cjs/lib-utils.cjs --target esm --bundle dist/lib-utils.min.js --output esm/ --update-all",
-    "build:all": "npm run build:esm && npm run build:minified"
+    "build:debug": "rimraf browser && to-esm cjs/lib-utils.cjs --output browser/ --target browser",
+    "build:debug2": "to-esm cjs/lib-utils.cjs --output esm/ --target esm",
+    "build:minified": "rimraf bundle && rimraf dist && to-esm cjs/lib-utils.cjs --target esm --output esm/ --bundle-esm bundle/lib-utils.min.mjs --bundle-cjs bundle/lib-utils.min.cjs --bundle-browser dist/lib-utils.min.js --update-all --use-bundle"
   },
   "author": "Patrice Thimothee",
   "license": "MIT",
   "devDependencies": {
-    "eslinter": "^3.2.1",
-    "to-esm": "^2.14.0"
+    "eslint": "^8.17.0",
+    "to-esm": "^2.15.0"
   },
   "module": "./esm/lib-utils.mjs",
   "type": "module",
   "exports": {
-    "require": "./cjs/lib-utils.cjs",
-    "import": "./esm/lib-utils.mjs"
+    "require": "./bundle/lib-utils.min.cjs",
+    "import": "./bundle/lib-utils.min.mjs"
   }
 }
