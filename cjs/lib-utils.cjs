@@ -871,6 +871,85 @@ const areEquals = (object1, object2) => {
     return JSON.stringify(s(object1)) === JSON.stringify(s(object2));
 };
 
+const getFilepathCopyName = (filepath, {extension = "bak"} = {}) =>
+{
+    const parsed = path.parse(filepath);
+    const dir = parsed.dir;
+    let filename = parsed.name;
+    const filepathBak = path.join(dir, filename + `.${extension}`);
+    if (!fs.existsSync(filepathBak))
+    {
+        return filepathBak;
+    }
+
+    for (let i = 0; ; ++i)
+    {
+        const filepathBak = path.join(dir, filename + `.${extension}.${i}`);
+        if (!fs.existsSync(filepathBak))
+        {
+            return filepathBak;
+        }
+    }
+
+    throw Error(`Could not determine file temp name`);
+};
+
+/**
+ * Replace a file if and only if they are different and a temporary security copy can be made
+ * @param json
+ * @param targetPath
+ * @returns {boolean}
+ */
+const replaceJsonContent = (json, targetPath) =>
+{
+    try
+    {
+        if (!json)
+        {
+            console.error(`The list of users cannot be empty`);
+        }
+
+        if (fs.existsSync(targetPath))
+        {
+            const old = fs.readFileSync(targetPath, "utf-8");
+            const json = JSON.parse(old);
+
+            // Compare values to avoid some unnecessary IO
+            if (areEquals(json, json))
+            {
+                return true;
+            }
+        }
+
+        const str = JSON.stringify(json, null, 4);
+
+        try
+        {
+            // Create a security copy
+            const copyFilepath = getFilepathCopyName(targetPath);
+            fs.copyFileSync(targetPath, copyFilepath);
+
+            fs.writeFileSync(targetPath, str, "utf-8");
+
+            // Delete security copy
+            fs.unlinkSync(copyFilepath);
+            return true;
+        }
+        catch (e)
+        {
+            console.error({lid: 1000}, e.message);
+        }
+    }
+    catch (e)
+    {
+        console.error({lid: 1000}, e.message);
+    }
+
+    return false;
+
+};
+
+
 // Generic functions
 module.exports.normalisePath = normalisePath;
 module.exports.normaliseDirPath = normaliseDirPath;
@@ -892,6 +971,8 @@ module.exports.normaliseFileName = normaliseFileName;
 module.exports.isObject = isObject;
 module.exports.addPlural = addPlural;
 module.exports.areEquals = areEquals;
+module.exports.replaceJsonContent = replaceJsonContent;
+module.exports.getFilepathCopyName = getFilepathCopyName;
 
 // File related function
 module.exports.getFilesizeInBytes = getFilesizeInBytes;
