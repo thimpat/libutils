@@ -12,11 +12,12 @@ const https = require("https");
 const crypto = require("crypto");
 /** to-esm-browser: end-remove **/
 
+const minimist = require("minimist");
+
 // ==================================================================
 // Constants
 // ==================================================================
 const {PATH_ERRORS} = require("./constants/constants.cjs");
-
 
 // ==================================================================
 // Generic functions
@@ -34,6 +35,17 @@ function sleep(ms)
     });
 }
 
+function convertArrayToObject(array, defaultValue = undefined)
+{
+    const object = {};
+    const n = array.length;
+    for (let i = 0; i < n; ++i)
+    {
+        const v = array[i];
+        object[v] = defaultValue === undefined ? i : defaultValue;
+    }
+    return object;
+}
 
 /**
  * Simple object check
@@ -317,7 +329,7 @@ const normaliseDirPath = (filepath, {
         isForceRelative,
         uncRoot
     });
- };
+};
 
 const normaliseFileName = (sessionName) =>
 {
@@ -354,7 +366,7 @@ const isArgsDir = (...args) =>
 
         lastArg = lastArg.trim();
         // return lastArg.charAt(lastArg.length - 1) === "/";
-        return lastArg.slice(1) === "/";
+        return lastArg.slice(-1) === "/";
     }
     catch (e)
     {
@@ -420,6 +432,50 @@ const getFilesizeInBytes = (file) =>
 {
     const stats = fs.statSync(file);
     return stats.size;
+};
+
+/**
+ * Get file text content
+ * @alias fs.readFileSync
+ * @param filepath
+ * @param options
+ * @returns {string}
+ */
+const getFileContent = function (filepath, options = {encoding: "utf-8"})
+{
+    return fs.readFileSync(filepath, options);
+};
+
+/**
+ * @alias fs.writeFileSync
+ * @param filepath
+ * @param options
+ */
+const writeFileContent = function (filepath, str, options = {encoding: "utf-8"})
+{
+    return fs.writeFileSync(filepath, str, options);
+};
+
+const loadJsonFile = function (filepath)
+{
+    const rawContent = getFileContent(filepath);
+    let json;
+    try
+    {
+        json = JSON.parse(rawContent);
+    }
+    catch (e)
+    {
+        console.error(e);
+    }
+    return json;
+};
+
+const saveJsonFile = function (filepath, obj, {indent = null, encoding = "utf-8"} = {})
+{
+    let str;
+    str = JSON.stringify(obj, null, indent);
+    writeFileContent(filepath, str, {encoding});
 };
 
 const convertToUrl = ({protocol, host, port, pathname}) =>
@@ -534,6 +590,42 @@ function addPlural(number, type = "word")
     }
 }
 
+/**
+ * Parse command line arguments (using minimist) and make their request
+ * easier.
+ * @example
+ * const {filepath} = getGlobalArguments();
+ * const {name, surname} = getGlobalArguments();
+ * @type {(function(): ({filepath: *, _: []}|null))|*}
+ */
+const getGlobalArguments = (function ()
+{
+    let argv = minimist(process.argv.slice(2));
+    let filepath;
+    let filepaths = [];
+    if (argv._.length)
+    {
+        filepath = argv._[0];
+        filepaths = argv._;
+    }
+
+
+    return function ()
+    {
+        try
+        {
+            return {filepath, filepaths, _: argv._, args: argv._, ...argv};
+        }
+        catch (e)
+        {
+            console.error({lid: 1000}, e.message);
+        }
+
+        return null;
+    };
+}());
+
+
 // ==================================================================
 // CLI Related functions
 // ==================================================================
@@ -559,7 +651,7 @@ const importLowerCaseOptions = (rawCliOptions, strList = "", cliOptions = {}) =>
     {
         const lowerCaseKey = key.toLowerCase();
 
-        if (lowerCaseKey !== key)
+        if (lowerCaseKey === key)
         {
             const realKey = table[lowerCaseKey];
             if (realKey)
@@ -645,10 +737,144 @@ const createAppDataDir = (appName) =>
     return false;
 };
 
+const getStackLineInfo = function (line)
+{
+    try
+    {
+        let funcName, lineNumber, colNumber, source;
+
+        let arr = line.split(":");
+        colNumber = parseInt(arr.pop());
+        lineNumber = parseInt(arr.pop());
+
+        const newLine = arr.join(":");
+        arr = newLine.split(/\s*\(/);
+
+        source = arr.pop();
+
+        const strArr = arr.pop().match(/\bat\s+(\w+)/);
+        funcName = (strArr.length === 2) ? strArr[1] : "";
+
+        return {funcName, lineNumber, colNumber, source, filesource: source};
+    }
+    catch (e)
+    {
+        console.error({lid: 1000}, e.message);
+    }
+
+    return null;
+};
+
+/**
+ *
+ * @param {number} stackStart Where in the stack to investigate
+ * @param stackPhrase
+ * @returns {*&{lines: string[]}}
+ */
+const getCallInfo = ({stackStart = 4, stackPhrase = ""} = {}) =>
+{
+    let lines, info;
+    try
+    {
+        const error = new Error("MyError");
+        lines = error.stack.split("\n");
+
+        let regexp;
+        if (stackPhrase)
+        {
+            regexp = new RegExp(stackPhrase, "gm");
+            stackStart = 0;
+        }
+
+        if (!stackStart)
+        {
+            for (let i = 0; i < lines.length; ++i)
+            {
+                if (regexp.test(lines[i]))
+                {
+                    stackStart = i + 1;
+                    break;
+                }
+            }
+        }
+
+        info = getStackLineInfo(lines[stackStart]);
+        if (!info)
+        {
+            return {};
+        }
+    }
+    catch (e)
+    {
+        console.error({lid: 2239,}, e.message);
+    }
+
+    return {lines, ...info, fileSource: info.source};
+};
+
+const getStackInfo = () =>
+{
+    let lines, info;
+    let stack = [];
+    try
+    {
+        const error = new Error("MyError");
+        lines = error.stack.split("\n");
+
+        let unusedUntil = -1;
+        for (let i = 0; i < lines.length; ++i)
+        {
+            const line = lines[i];
+            if (/\btestgen\.cjs\b/.test(line))
+            {
+                unusedUntil = i;
+            }
+
+            info = getStackLineInfo(line);
+            if (!info)
+            {
+                continue;
+            }
+
+            stack.push(info);
+        }
+
+        if (unusedUntil > -1)
+        {
+            stack = stack.slice(unusedUntil);
+        }
+
+    }
+    catch (e)
+    {
+        console.error({lid: 2239,}, e.message);
+    }
+
+    return stack;
+};
+
+/**
+ * Compare two objects (deep)
+ * @note More than 80 implementations suggested, but this one would be the way I would go for.
+ * More importantly, it's the way I thought of implementing before checking for an eventual
+ * existing one.
+ * @see https://stackoverflow.com/questions/201183/how-to-determine-equality-for-two-javascript-objects
+ * @param object1
+ * @param object2
+ * @returns {boolean}
+ */
+const areEquals = (object1, object2) => {
+    let s = (o) => Object.entries(o).sort().map(i => {
+        if(i[1] instanceof Object) i[1] = s(i[1]);
+        return i;
+    });
+    return JSON.stringify(s(object1)) === JSON.stringify(s(object2));
+};
 
 // Generic functions
 module.exports.normalisePath = normalisePath;
 module.exports.normaliseDirPath = normaliseDirPath;
+module.exports.convertArrayToObject = convertArrayToObject;
 
 module.exports.joinPath = joinPath;
 module.exports.mergeDeep = mergeDeep;
@@ -658,7 +884,6 @@ module.exports.convertSessionKeyNameToArg = convertSessionKeyNameToArg;
 module.exports.convertSessionToArg = convertSessionToArg;
 module.exports.resolvePath = resolvePath;
 module.exports.isItemInList = isItemInList;
-module.exports.getFilesizeInBytes = getFilesizeInBytes;
 module.exports.convertToUrl = convertToUrl;
 module.exports.doNothing = doNothing;
 module.exports.fetchSync = fetchSync;
@@ -666,8 +891,21 @@ module.exports.calculateRelativePath = calculateRelativePath;
 module.exports.normaliseFileName = normaliseFileName;
 module.exports.isObject = isObject;
 module.exports.addPlural = addPlural;
+module.exports.areEquals = areEquals;
+
+// File related function
+module.exports.getFilesizeInBytes = getFilesizeInBytes;
+module.exports.getFileContent = getFileContent;
+module.exports.writeFileContent = writeFileContent;
+module.exports.loadJsonFile = loadJsonFile;
+module.exports.saveJsonFile = saveJsonFile;
+
+// Profiling Related functions
+module.exports.getCallInfo = getCallInfo;
+module.exports.getStackInfo = getStackInfo;
 
 // CLI Related functions
+module.exports.getGlobalArguments = getGlobalArguments;
 module.exports.importLowerCaseOptions = importLowerCaseOptions;
 module.exports.changeOptionsToLowerCase = changeOptionsToLowerCase;
 
