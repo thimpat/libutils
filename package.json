@@ -2,26 +2,28 @@
   "name": "@thimpat/libutils",
   "version": "1.3.0",
   "description": "Helper functions",
-  "main": "cjs/index.cjs",
+  "main": "src/index.cjs",
   "scripts": {
-    "build:debug": "rimraf dist && to-esm cjs/lib-utils.cjs --output dist/ --target browser",
-    "build:debug2": "to-esm cjs/lib-utils.cjs --output esm/ --target esm",
-    "build:standard": "rimraf dist && rimraf dist && to-esm cjs/lib-utils.cjs --target esm --output esm/ --bundle-cjs dist/lib-utils.min.cjs --bundle-esm dist/lib-utils.min.mjs --bundle-browser dist/lib-utils.min.js --update-all",
-    "build:minified": "rimraf dist && rimraf dist && to-esm cjs/lib-utils.cjs --target esm --output esm/ --bundle-cjs dist/lib-utils.min.cjs --bundle-esm dist/lib-utils.min.mjs --bundle-browser dist/lib-utils.min.js --update-all --use-bundle"
+    "clean-dirs": "rimraf dist && rimraf esm && rimraf cjs",
+    "build:browser": "rimraf dist && to-esm lib-utils.cjs --output dist/ --target browser --bundle-browser dist/lib-utils.min.js --update-all --use-bundle",
+    "build:esm": "to-esm lib-utils.cjs --target esm --output esm/ --bundle-esm esm/lib-utils.min.mjs --update-all --use-bundle",
+    "build:minified": "npm run clean-dirs && npm run build:browser && npm run build:esm && to-esm lib-utils.cjs --target esm --output esm/ --bundle-cjs cjs/lib-utils.min.cjs --bundle-esm esm/lib-utils.min.mjs --update-all --use-bundle"
   },
   "author": "Patrice Thimothee",
   "license": "MIT",
   "devDependencies": {
     "eslint": "^8.17.0",
-    "to-esm": "^2.15.0"
+    "to-esm": "file:../to-esm"
   },
   "module": "./esm/lib-utils.mjs",
   "type": "module",
   "exports": {
-    "require": "./dist/lib-utils.min.cjs",
-    "import": "./dist/lib-utils.min.mjs"
+    "require": "./cjs/lib-utils.min.cjs",
+    "import": "./esm/lib-utils.min.mjs"
   },
   "dependencies": {
+    "const": "^1.0.0",
     "minimist": "^1.2.6"
-  }
+  },
+  "browser": "./dist/lib-utils.min.js"
 }

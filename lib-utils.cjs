@@ -10,9 +10,50 @@ const path = require("path");
 const fs = require("fs");
 const https = require("https");
 const crypto = require("crypto");
+const minimist = require("minimist");
 /** to-esm-browser: end-remove **/
 
-const minimist = require("minimist");
+// ==================================================================
+// Browser incompatibles units
+// ==================================================================
+/** to-esm-browser: remove **/
+/**
+ * Parse command line arguments (using minimist) and make their request
+ * easier.
+ * @example
+ * const {filepath} = getGlobalArguments();
+ * const {name, surname} = getGlobalArguments();
+ * @type {(function(): ({filepath: *, _: []}|null))|*}
+ */
+const getGlobalArguments = (function ()
+{
+    let argv = minimist(process.argv.slice(2));
+    let filepath;
+    let filepaths = [];
+    if (argv._.length)
+    {
+        filepath = argv._[0];
+        filepaths = argv._;
+    }
+
+
+    return function ()
+    {
+        try
+        {
+            return {filepath, filepaths, _: argv._, args: argv._, ...argv};
+        }
+        catch (e)
+        {
+            console.error({lid: 1000}, e.message);
+        }
+
+        return null;
+    };
+}());
+
+module.exports.getGlobalArguments = getGlobalArguments;
+/** to-esm-browser: end-remove **/
 
 // ==================================================================
 // Constants
@@ -590,42 +631,6 @@ function addPlural(number, type = "word")
     }
 }
 
-/**
- * Parse command line arguments (using minimist) and make their request
- * easier.
- * @example
- * const {filepath} = getGlobalArguments();
- * const {name, surname} = getGlobalArguments();
- * @type {(function(): ({filepath: *, _: []}|null))|*}
- */
-const getGlobalArguments = (function ()
-{
-    let argv = minimist(process.argv.slice(2));
-    let filepath;
-    let filepaths = [];
-    if (argv._.length)
-    {
-        filepath = argv._[0];
-        filepaths = argv._;
-    }
-
-
-    return function ()
-    {
-        try
-        {
-            return {filepath, filepaths, _: argv._, args: argv._, ...argv};
-        }
-        catch (e)
-        {
-            console.error({lid: 1000}, e.message);
-        }
-
-        return null;
-    };
-}());
-
-
 // ==================================================================
 // CLI Related functions
 // ==================================================================
@@ -986,7 +991,6 @@ module.exports.getCallInfo = getCallInfo;
 module.exports.getStackInfo = getStackInfo;
 
 // CLI Related functions
-module.exports.getGlobalArguments = getGlobalArguments;
 module.exports.importLowerCaseOptions = importLowerCaseOptions;
 module.exports.changeOptionsToLowerCase = changeOptionsToLowerCase;
 
