@@ -920,7 +920,7 @@ const replaceJsonContent = (json, targetPath) =>
             const json = JSON.parse(old);
 
             // Compare values to avoid some unnecessary IO
-            if (areEquals(json, json))
+            if (areEquals(json, old))
             {
                 return true;
             }
