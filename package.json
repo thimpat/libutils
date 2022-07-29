@@ -6,7 +6,7 @@
   "scripts": {
     "clean-dirs": "rimraf dist && rimraf esm && rimraf cjs",
     "build:browser": "rimraf dist && to-esm lib-utils.cjs --output dist/ --target browser --bundle-browser dist/lib-utils.min.js --update-all --use-bundle",
-    "build:esm": "to-esm lib-utils.cjs --target esm --output esm/ --bundle-esm esm/lib-utils.min.mjs --update-all --use-bundle",
+    "build:esm": "to-esm lib-utils.cjs --target esm --output esm/ --bundle-esm esm/lib-utils.min.mjs --update-all",
     "build:minified": "npm run clean-dirs && npm run build:browser && npm run build:esm && to-esm lib-utils.cjs --target esm --output esm/ --bundle-cjs cjs/lib-utils.min.cjs --bundle-esm esm/lib-utils.min.mjs --update-all --use-bundle"
   },
   "author": "Patrice Thimothee",
@@ -18,8 +18,8 @@
   "module": "./esm/lib-utils.mjs",
   "type": "module",
   "exports": {
-    "require": "./cjs/lib-utils.min.cjs",
-    "import": "./esm/lib-utils.min.mjs"
+    "require": "./lib-utils.cjs",
+    "import": "./esm/lib-utils.mjs"
   },
   "dependencies": {
     "const": "^1.0.0",
