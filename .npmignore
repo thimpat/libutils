@@ -76,5 +76,3 @@ out
 /dist/constants/
 /esm/lib-utils.mjs
 /esm/constants/
-/esm/node_modules/
-/lib-utils.cjs
