@@ -654,9 +654,10 @@ const importLowerCaseOptions = (rawCliOptions, strList = "", cliOptions = {}) =>
 
     Object.keys(rawCliOptions).forEach((key) =>
     {
-        const lowerCaseKey = key.toLowerCase();
+        let lowerCaseKey = key.toLowerCase();
+        lowerCaseKey = lowerCaseKey.replaceAll("-", "");
 
-        if (lowerCaseKey === key)
+        if (table.hasOwnProperty(lowerCaseKey))
         {
             const realKey = table[lowerCaseKey];
             if (realKey)
