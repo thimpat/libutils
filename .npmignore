@@ -71,8 +71,3 @@ out
 .pnp.*
 /.eslintrc.cjs
 /.gitignore
-/constants/
-/dist/lib-utils.mjs
-/dist/constants/
-/esm/lib-utils.mjs
-/esm/constants/

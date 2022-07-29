@@ -2,7 +2,7 @@
   "name": "@thimpat/libutils",
   "version": "1.4.1",
   "description": "Helper functions",
-  "main": "src/index.cjs",
+  "main": "./lib-utils.cjs",
   "scripts": {
     "clean-dirs": "rimraf dist && rimraf esm && rimraf cjs",
     "build:browser": "rimraf dist && to-esm lib-utils.cjs --output dist/ --target browser --bundle-browser dist/lib-utils.min.js --update-all --use-bundle",
@@ -16,10 +16,10 @@
     "to-esm": "file:../to-esm"
   },
   "module": "./esm/lib-utils.mjs",
-  "type": "module",
+  "type": "commonjs",
   "exports": {
-    "require": "./lib-utils.cjs",
-    "import": "./esm/lib-utils.mjs"
+    "require": "./cjs/lib-utils.min.cjs",
+    "import": "./esm/lib-utils.min.mjs"
   },
   "dependencies": {
     "const": "^1.0.0",
