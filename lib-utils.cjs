@@ -642,35 +642,51 @@ function addPlural(number, type = "word")
  * @param cliOptions
  * @returns {{}}
  */
-const importLowerCaseOptions = (rawCliOptions, strList = "", cliOptions = {}) =>
+const importLowerCaseOptions = (rawObject, unchangedList = "", {replaceDash = false, uselowercase = true} = {}) =>
 {
-    const table = {};
-    const list = strList.split(",");
+    const newObject = {};
+    const keepUnchanged = {};
+    const list = Array.isArray(unchangedList) ? unchangedList : unchangedList.split(",");
+
+    // Keys to keep unchanged
     list.forEach((realKey) =>
     {
         realKey = realKey.trim();
-        table[realKey.toLowerCase()] = realKey;
+        keepUnchanged[realKey.toLowerCase()] = realKey;
     });
 
-    Object.keys(rawCliOptions).forEach((key) =>
+    // Go over each key
+    Object.keys(rawObject).forEach((key) =>
     {
         let lowerCaseKey = key.toLowerCase();
-        lowerCaseKey = lowerCaseKey.replaceAll("-", "");
-
-        if (table.hasOwnProperty(lowerCaseKey))
+        if (replaceDash)
         {
-            const realKey = table[lowerCaseKey];
-            if (realKey)
+            const validReplacement = lowerCaseKey.replaceAll("-", "");
+            if (validReplacement)
             {
-                cliOptions[realKey] = rawCliOptions[key];
-                return;
+                lowerCaseKey = validReplacement;
             }
         }
 
-        cliOptions[key] = rawCliOptions[key];
+        // If the key is one to keep unchanged, we do the transformation
+        if (keepUnchanged.hasOwnProperty(lowerCaseKey))
+        {
+            const wantedKey = keepUnchanged[lowerCaseKey];
+            newObject[wantedKey] = rawObject[key];
+            return;
+        }
+
+        // If the user enable this option, we force all keys to lower case
+        if (uselowercase)
+        {
+            newObject[lowerCaseKey] = rawObject[key];
+            return;
+        }
+
+        newObject[key] = rawObject[key];
     });
 
-    return cliOptions;
+    return newObject;
 };
 
 /**
