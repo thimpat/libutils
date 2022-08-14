@@ -22,7 +22,6 @@
     "import": "./esm/lib-utils.mjs"
   },
   "dependencies": {
-    "const": "^1.0.0",
     "minimist": "^1.2.6"
   },
   "browser": "./dist/lib-utils.min.js"
