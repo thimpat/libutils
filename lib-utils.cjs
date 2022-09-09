@@ -372,21 +372,69 @@ const normaliseDirPath = (filepath, {
     });
 };
 
-const normaliseFileName = (sessionName) =>
+const normaliseFileName = (filename) =>
 {
     try
     {
-        if (!sessionName)
+        if (!filename)
         {
             return "";
         }
 
-        sessionName = sessionName.trim().toLowerCase();
-        return sessionName;
+        filename = filename.trim().toLowerCase();
+        return filename;
     }
     catch (e)
     {
         console.error(e);
+    }
+};
+
+/**
+ * Normalise existing filepath
+ * @param filepath
+ * @returns {string|null}
+ */
+const normaliseRealPath = (filepath) =>
+{
+    try
+    {
+        if (!fs.existsSync(filepath))
+        {
+            return {
+                success: false,
+                error: new Error(`The source file "${filepath}" does not exist`)
+            };
+        }
+
+        const lstats = fs.lstatSync(filepath);
+
+        if (lstats.isFile())
+        {
+            return {
+                success: true,
+                filepath: normalisePath(filepath, {isFolder: false})
+            };
+        }
+        else if (lstats.isDirectory())
+        {
+            return {
+                success: true,
+                filepath: normalisePath(filepath, {isFolder: true})
+            };
+        }
+
+        return {
+            success: false,
+            error: new Error(`This method only handles files and folders ${filepath}`)
+        };
+    }
+    catch (e)
+    {
+        return {
+            success: false,
+            error: e
+        };
     }
 };
 
@@ -445,6 +493,12 @@ const resolvePath = (filepath) =>
     return filepath;
 };
 
+/**
+ *
+ * @param item
+ * @param list
+ * @returns {boolean}
+ */
 const isItemInList = (item, list = []) =>
 {
     if (!item)
@@ -490,6 +544,7 @@ const getFileContent = function (filepath, options = {encoding: "utf-8"})
 /**
  * @alias fs.writeFileSync
  * @param filepath
+ * @param str
  * @param options
  */
 const writeFileContent = function (filepath, str, options = {encoding: "utf-8"})
@@ -580,7 +635,12 @@ const calculateRelativePath = (source, requiredPath) =>
     return normalisePath(relativePath);
 };
 
-
+/**
+ * Not tested
+ * @param url
+ * @param isJson
+ * @returns {Promise<unknown>}
+ */
 const fetchSync = async function (url, isJson = false)
 {
     return new Promise(async function (resolve, reject)
@@ -615,7 +675,11 @@ const fetchSync = async function (url, isJson = false)
 };
 
 /**
- *
+ * Whether to add an "s" to a word or verbs
+ * @example
+ * console.log(`2 thing${addPlural(2)}`     // 2 things
+ * console.log(`1 desk${addPlural(2)}`      // 1 desk
+ * @FIXME: Remove the verb category
  * @param number
  * @param type
  */
@@ -638,9 +702,9 @@ function addPlural(number, type = "word")
  * Change cli options to lower case
  * @see [to-esm module for a use case]
  * @param rawCliOptions
- * @param strList
- * @param cliOptions
  * @returns {{}}
+ * @param rawObject
+ * @param unchangedList
  */
 const importLowerCaseOptions = (rawObject, unchangedList = "", {replaceDash = false, uselowercase = true} = {}) =>
 {
@@ -709,8 +773,70 @@ const changeOptionsToLowerCase = (rawCliOptions, cliOptions = {}) =>
 // ==================================================================
 // Path Related functions
 // ==================================================================
-//
-// ------------------------------------------------------------------
+/**
+ * Returns common parts of strings,
+ * @param str1
+ * @param str2
+ * @returns {string|*}
+ */
+const getCommon = function (str1, str2)
+{
+    const max = Math.min(str1.length, str2.length);
+    for (let i = 0; i < max; ++i)
+    {
+        const char1 = str1[i];
+        const char2 = str2[i];
+
+        if (char1 !== char2)
+        {
+            return str1.substring(i);
+        }
+    }
+
+    return str1;
+};
+
+/**
+ * Returns the longest common directory amongst a list of files and folders
+ * @note Folders must end with a forward slash /
+ * @param files
+ * @returns {string|*}
+ */
+const calculateCommon = (files) =>
+{
+    const n = files.length;
+    let longestCommon = files[0];
+    for (let i = 0; i < n; ++i)
+    {
+        const filepath = normalisePath(files[i]);
+        if (n <= 1)
+        {
+            break;
+        }
+        longestCommon = getCommon(filepath, longestCommon);
+    }
+
+    longestCommon = normalisePath(longestCommon);
+
+    // It's a directory
+    if (isConventionalFolder(longestCommon))
+    {
+        return longestCommon;
+    }
+
+    // It's a file
+    const index = longestCommon.lastIndexOf("/");
+    if (index < 0)
+    {
+        return "/";
+    }
+
+    return longestCommon.substring(0, index + 1);
+};
+
+// ==================================================================
+// User Related functions
+// ==================================================================
 /**
  * Returns OS data dir for the application
  * @returns {string|null}
@@ -885,9 +1011,14 @@ const getStackInfo = () =>
  * @param object2
  * @returns {boolean}
  */
-const areEquals = (object1, object2) => {
-    let s = (o) => Object.entries(o).sort().map(i => {
-        if(i[1] instanceof Object) i[1] = s(i[1]);
+const areEquals = (object1, object2) =>
+{
+    let s = (o) => Object.entries(o).sort().map(i =>
+    {
+        if (i[1] instanceof Object)
+        {
+            i[1] = s(i[1]);
+        }
         return i;
     });
     return JSON.stringify(s(object1)) === JSON.stringify(s(object2));
@@ -928,16 +1059,18 @@ const replaceJsonContent = (json, targetPath) =>
     {
         if (!json)
         {
-            console.error(`The list of users cannot be empty`);
+            return false;
         }
 
+        // Check target file exists
         if (fs.existsSync(targetPath))
         {
-            const old = fs.readFileSync(targetPath, "utf-8");
-            const json = JSON.parse(old);
+            // Read its content
+            const previous = fs.readFileSync(targetPath, "utf-8");
+            const json = JSON.parse(previous);
 
-            // Compare values to avoid some unnecessary IO
-            if (areEquals(json, old))
+            // Compare with the given value
+            if (areEquals(json, previous))
             {
                 return true;
             }
@@ -945,26 +1078,21 @@ const replaceJsonContent = (json, targetPath) =>
 
         const str = JSON.stringify(json, null, 4);
 
-        try
-        {
-            // Create a security copy
-            const copyFilepath = getFilepathCopyName(targetPath);
-            fs.copyFileSync(targetPath, copyFilepath);
+        // Create a security copy
+        const copyFilepath = getFilepathCopyName(targetPath);
+        fs.copyFileSync(targetPath, copyFilepath);
 
-            fs.writeFileSync(targetPath, str, "utf-8");
+        // If it fails we still have a copy
+        // NOTE: Need to check use cases
+        fs.writeFileSync(targetPath, str, "utf-8");
 
-            // Delete security copy
-            fs.unlinkSync(copyFilepath);
-            return true;
-        }
-        catch (e)
-        {
-            console.error({lid: 1000}, e.message);
-        }
+        // Delete security copy
+        fs.unlinkSync(copyFilepath);
+        return true;
     }
     catch (e)
     {
-        console.error({lid: 1000}, e.message);
+        console.error(e.message);
     }
 
     return false;
@@ -973,35 +1101,34 @@ const replaceJsonContent = (json, targetPath) =>
 
 
 // Generic functions
-module.exports.normalisePath = normalisePath;
-module.exports.normaliseDirPath = normaliseDirPath;
 module.exports.convertArrayToObject = convertArrayToObject;
-
-module.exports.joinPath = joinPath;
 module.exports.mergeDeep = mergeDeep;
 module.exports.sleep = sleep;
-module.exports.generateTempName = generateTempName;
 module.exports.convertSessionKeyNameToArg = convertSessionKeyNameToArg;
 module.exports.convertSessionToArg = convertSessionToArg;
-module.exports.resolvePath = resolvePath;
 module.exports.isItemInList = isItemInList;
-module.exports.convertToUrl = convertToUrl;
 module.exports.doNothing = doNothing;
-module.exports.fetchSync = fetchSync;
-module.exports.calculateRelativePath = calculateRelativePath;
-module.exports.normaliseFileName = normaliseFileName;
 module.exports.isObject = isObject;
-module.exports.addPlural = addPlural;
 module.exports.areEquals = areEquals;
 module.exports.replaceJsonContent = replaceJsonContent;
-module.exports.getFilepathCopyName = getFilepathCopyName;
 
-// File related function
+// String related functions
+module.exports.generateTempName = generateTempName;
+module.exports.getCommon = getCommon;
+module.exports.addPlural = addPlural;
+
+// URL related functions
+module.exports.convertToUrl = convertToUrl;
+module.exports.fetchSync = fetchSync;
+
+// File related functions
 module.exports.getFilesizeInBytes = getFilesizeInBytes;
 module.exports.getFileContent = getFileContent;
 module.exports.writeFileContent = writeFileContent;
 module.exports.loadJsonFile = loadJsonFile;
 module.exports.saveJsonFile = saveJsonFile;
+module.exports.normaliseFileName = normaliseFileName;
+module.exports.getFilepathCopyName = getFilepathCopyName;
 
 // Profiling Related functions
 module.exports.getCallInfo = getCallInfo;
@@ -1015,3 +1142,12 @@ module.exports.changeOptionsToLowerCase = changeOptionsToLowerCase;
 module.exports.isArgsDir = isArgsDir;
 module.exports.getAppDataDir = getAppDataDir;
 module.exports.createAppDataDir = createAppDataDir;
+module.exports.isConventionalFolder = isConventionalFolder;
+module.exports.resolvePath = resolvePath;
+module.exports.joinPath = joinPath;
+module.exports.normalisePath = normalisePath;
+module.exports.normaliseDirPath = normaliseDirPath;
+module.exports.calculateRelativePath = calculateRelativePath;
+module.exports.calculateCommon = calculateCommon;
+module.exports.normaliseRealPath = normaliseRealPath;
+
