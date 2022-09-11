@@ -11,6 +11,7 @@ const fs = require("fs");
 const https = require("https");
 const crypto = require("crypto");
 const minimist = require("minimist");
+const execSync = require("child_process").execSync;
 /** to-esm-browser: end-remove **/
 
 // ==================================================================
@@ -1099,6 +1100,53 @@ const replaceJsonContent = (json, targetPath) =>
 
 };
 
+/**
+ * Check if a package is installed globally or locally
+ * @example
+ * // Check if installed
+ * isPackageInstalled("remote-logging")
+ *
+ * // Check if installed globally
+ * isPackageInstalled("remote-logging", {global: true})
+ *
+ * // Check if a version installed
+ * isPackageInstalled("remote-logging", {version: "1.0.0", global: false})
+ *
+ * @param packageName
+ * @param version
+ * @param global
+ * @param depth
+ * @returns {boolean}
+ */
+const isPackageInstalled = (packageName, {version = null, global = false, depth = 0}) =>
+{
+    try
+    {
+        if (version)
+        {
+            packageName += "@" + version;
+        }
+
+        let cli = `npm list ${packageName} --depth ${depth}`;
+        if (global)
+        {
+            cli += " -g";
+        }
+
+        const output = execSync(cli);
+        const str = output.toString();
+        const reg = new RegExp("\\bremote-logging\\b", "g");
+
+        return reg.test(str);
+    }
+    catch (e)
+    {
+    }
+
+    return false;
+};
+
+
 
 // Generic functions
 module.exports.convertArrayToObject = convertArrayToObject;
@@ -1150,4 +1198,7 @@ module.exports.normaliseDirPath = normaliseDirPath;
 module.exports.calculateRelativePath = calculateRelativePath;
 module.exports.calculateCommon = calculateCommon;
 module.exports.normaliseRealPath = normaliseRealPath;
+
+// Package related functions
+module.exports.isPackageInstalled = isPackageInstalled;
 
