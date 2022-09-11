@@ -67,7 +67,6 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-!/.eslintrc.cjs
-!/dist/
-/esm/
 /dist/
+/esm/
+/cjs/lib-utils.min.cjs
