@@ -1189,8 +1189,6 @@ const findProjectDir = ({projectName = "", root = false, startDir = undefined} =
         while (true)
         {
             const packageJsonPath = joinPath(startDir, "./package.json");
-            console.log(packageJsonPath);
-
             if (fs.existsSync(packageJsonPath))
             {
                 if (projectName)
