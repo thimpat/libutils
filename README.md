@@ -46,7 +46,6 @@ isConventionalFolder("\\where\\here\\")      // /home/user/some/where/here/
 
 ---
 
-
 ### getAppDataDir
 
 ###### Returns OS data dir for the application
@@ -110,6 +109,19 @@ const packageJson = getPackageJson({root: false})           // Content of /home/
 
 ```
 
-_* Default value for "root" is false_
+> ###### _* Default value for "root" is false_
+
+---
+
+### getLocalIp
+
+###### Try to best guess the machine local IP
+
+```javascript
+getLocalIp()      // 192.168.1.4
+```
+
+
+
 
 ...
