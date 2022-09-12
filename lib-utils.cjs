@@ -1146,6 +1146,119 @@ const isPackageInstalled = (packageName, {version = null, global = false, depth 
     return false;
 };
 
+/**
+ * Tells whether we're in cjs at runtime
+ * @returns {boolean}
+ */
+const isCjs = () =>
+{
+    try
+    {
+        if (typeof require === "function")
+        {
+            if (require.resolve && require.main && require.main.filename)
+            {
+                return true;
+            }
+        }
+    }
+    catch (e)
+    {
+        console.error({lid: 4321}, e.message);
+    }
+
+    return false;
+};
+
+/**
+ * Find project root directory
+ * @returns {string|boolean}
+ */
+const findProjectDir = ({projectName = "", root = false, startDir = undefined} = {}) =>
+{
+    try
+    {
+        projectName = ("" + projectName).trim();
+        startDir = startDir || process.cwd();
+        startDir = resolvePath(startDir);
+        if (root)
+        {
+            startDir = startDir.split("node_modules")[0];
+        }
+
+        while (true)
+        {
+            const packageJsonPath = joinPath(startDir, "./package.json");
+            console.log(packageJsonPath);
+
+            if (fs.existsSync(packageJsonPath))
+            {
+                if (projectName)
+                {
+                    try
+                    {
+                        const content = fs.readFileSync(packageJsonPath, {encoding: "utf-8"});
+                        const json = JSON.parse(content);
+                        if (projectName === json.name)
+                        {
+                            return startDir;
+                        }
+                    }
+                    catch (e)
+                    {
+                        console.error({lid: 4321}, e.message);
+                    }
+                }
+                else
+                {
+                    return startDir;
+                }
+            }
+
+            const parentDir = joinPath(startDir, "..");
+            if (startDir === parentDir)
+            {
+                return "";
+            }
+
+            startDir = parentDir;
+        }
+
+    }
+    catch (e)
+    {
+        console.error({lid: 4321}, e.message);
+    }
+
+    return false;
+};
+
+/**
+ * Returns package.json content
+ * @returns {null|any}
+ */
+const getPackageJson = ({projectName = "", root = false, startDir = undefined} = {}) =>
+{
+    try
+    {
+        const projectRootDir = findProjectDir({projectName, root, startDir});
+        if (!projectRootDir)
+        {
+            return;
+        }
+
+        const packageJson = joinPath(projectRootDir, "./package.json");
+
+        const data = fs.readFileSync(packageJson, {encoding: "utf-8"});
+        return JSON.parse(data);
+    }
+    catch (e)
+    {
+        console.error({lid: 4321}, e.message);
+    }
+
+    return null;
+};
 
 
 // Generic functions
@@ -1201,4 +1314,7 @@ module.exports.normaliseRealPath = normaliseRealPath;
 
 // Package related functions
 module.exports.isPackageInstalled = isPackageInstalled;
+module.exports.isCjs = isCjs;
+module.exports.findProjectDir = findProjectDir;
+module.exports.getPackageJson = getPackageJson;
 
