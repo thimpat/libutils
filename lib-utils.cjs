@@ -1327,7 +1327,8 @@ const getIpInfoList = () =>
             cidr = info.cidr.split("/");
             cidr[1] = parseInt(cidr[1]);
 
-            if (networkName.includes("vmware") || networkName.includes("vmnet") || networkName.includes("vEthernet") || networkName.includes("(WSL)") || networkName.includes("virtual"))
+            if (networkName.includes("vmware") || networkName.includes("vmnet") || networkName.includes("vEthernet") ||
+                networkName.includes("(WSL)") || networkName.includes("virtual") || networkName.includes("vbox"))
             {
                 priorities += 1;
             }
@@ -1335,7 +1336,15 @@ const getIpInfoList = () =>
             {
                 priorities += 3;
             }
-            else if (/\bethernet/.test(networkName) || /\bppp/.test(networkName))
+            else if (/\bppp/.test(networkName))
+            {
+                priorities += 2;
+            }
+            else if (/\bwlan/.test(networkName))
+            {
+                priorities += 3;
+            }
+            else if (/\bethernet/.test(networkName) || /\beth/.test(networkName))
             {
                 priorities += 5;
             }
