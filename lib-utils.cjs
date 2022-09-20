@@ -306,7 +306,8 @@ const normalisePath = (filepath, {
             return somePath;
         }
 
-        if (!somePath.trim())
+        somePath = somePath.trim();
+        if (!somePath || somePath === ".")
         {
             return "./";
         }
@@ -799,6 +800,48 @@ const getCommon = function (str1, str2)
 };
 
 /**
+ * Returns common part of directories
+ * @param dir1
+ * @param dir2
+ * @returns {string|*}
+ */
+const getCommonDir = function (dir1, dir2)
+{
+    const parts1 = dir1.split("/");
+    const parts2 = dir2.split("/");
+
+    if (!dir1.endsWith("/"))
+    {
+        parts1.pop();
+    }
+
+    if (!dir2.endsWith("/"))
+    {
+        parts2.pop();
+    }
+
+    if (!parts1.length || !parts2.length)
+    {
+        return "./";
+    }
+
+    const max = Math.min(parts1.length, parts2.length);
+
+    for (let i = 0; i < max; ++i)
+    {
+        const word1 = parts1[i];
+        const word2 = parts2[i];
+
+        if (word1 !== word2)
+        {
+            return parts1.slice(0, i).join("/") + "/";
+        }
+    }
+
+    return dir1;
+};
+
+/**
  * Returns the longest common directory amongst a list of files and folders
  * @note Folders must end with a forward slash /
  * @param files
@@ -815,7 +858,7 @@ const calculateCommon = (files) =>
         {
             break;
         }
-        longestCommon = getCommon(filepath, longestCommon);
+        longestCommon = getCommonDir(longestCommon, filepath);
     }
 
     longestCommon = normalisePath(longestCommon);
@@ -1437,6 +1480,7 @@ module.exports.replaceJsonContent = replaceJsonContent;
 // String related functions
 module.exports.generateTempName = generateTempName;
 module.exports.getCommon = getCommon;
+module.exports.getCommonDir = getCommonDir;
 module.exports.addPlural = addPlural;
 
 // URL related functions
