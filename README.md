@@ -125,3 +125,10 @@ getLocalIp()      // 192.168.1.4
 
 
 ...
+
+
+### Changelog
+
+*  Fix calculateCommon function
+
+---
