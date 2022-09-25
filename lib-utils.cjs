@@ -850,7 +850,7 @@ const getCommonDir = function (dir1, dir2)
 const calculateCommon = (files) =>
 {
     const n = files.length;
-    let longestCommon = files[0];
+    let longestCommon = normalisePath(files[0]);
     for (let i = 0; i < n; ++i)
     {
         const filepath = normalisePath(files[i]);
