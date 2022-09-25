@@ -11,51 +11,19 @@ const path = require("path");
 const fs = require("fs");
 const https = require("https");
 const crypto = require("crypto");
-const minimist = require("minimist");
 const execSync = require("child_process").execSync;
 /** to-esm-browser: end-remove **/
 
 // ==================================================================
 // Browser incompatibles units
 // ==================================================================
-/** to-esm-browser: remove **/
 /**
- * Parse command line arguments (using minimist) and make their request
- * easier.
- * @example
- * const {filepath} = getGlobalArguments();
- * const {name, surname} = getGlobalArguments();
- * @type {(function(): ({filepath: *, _: []}|null))|*}
+ * @obsolete
  */
 const getGlobalArguments = (function ()
 {
-    let argv = minimist(process.argv.slice(2));
-    let filepath;
-    let filepaths = [];
-    if (argv._.length)
-    {
-        filepath = argv._[0];
-        filepaths = argv._;
-    }
-
-
-    return function ()
-    {
-        try
-        {
-            return {filepath, filepaths, _: argv._, args: argv._, ...argv};
-        }
-        catch (e)
-        {
-            console.error({lid: 1000}, e.message);
-        }
-
-        return null;
-    };
-}());
-
-module.exports.getGlobalArguments = getGlobalArguments;
-/** to-esm-browser: end-remove **/
+    throw new Error(`Obsolete function: Available in version 1.9.3`);
+});
 
 // ==================================================================
 // Constants
@@ -1527,4 +1495,8 @@ module.exports.getPackageJson = getPackageJson;
 module.exports.getIps = getIps;
 module.exports.getIpInfoList = getIpInfoList;
 module.exports.getLocalIp = getLocalIp;
+
+// Obsolete
+module.exports.getGlobalArguments = getGlobalArguments;
+
 
