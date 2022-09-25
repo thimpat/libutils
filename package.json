@@ -22,8 +22,5 @@
     "require": "./lib-utils.cjs",
     "import": "./esm/lib-utils.mjs"
   },
-  "dependencies": {
-    "minimist": "^1.2.6"
-  },
   "browser": "./dist/lib-utils.min.js"
 }
