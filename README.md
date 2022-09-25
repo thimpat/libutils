@@ -129,26 +129,14 @@ getLocalIp()      // 192.168.1.4
 ### Changelog
 
 ##### current:
+*  Make non-generic function getGlobalArguments obsolete
+
+
+##### 1.9.3:
 *  Review some minor output for the commonDir function
 
 
 ##### 1.9.2:
 *  Fix calculateCommon function
-
-
-##### 1.9.1:
-*  Add more interface names for local IP detection
-
-
-##### 1.9.0:
-*  Add function local IP network related
-
-
-##### 1.8.1:
-*  Remove console.log from findProjectDir
-
-
-##### 1.8.0:
-*  Add package-related functions
 
 ---
