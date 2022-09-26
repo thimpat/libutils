@@ -69,6 +69,40 @@ convertToUrl({protocol: "https", host: "somewhere"})                    // https
 convertToUrl({protocol: "https", host: "somewhere", pathname: "here"})  // https://somewhere/here
 ```
 
+---
+
+### areEquals
+
+###### Compare two inputs (Objects, Arrays, etc.)
+
+```javascript
+
+areEquals(15, "d");                                              // false
+
+areEquals([1, 2, 3],[1, 2, 3]);                                  // true
+areEquals([1, 2, 3],[1, 3, 2]);                                  // false
+
+areEquals({aa: 1, bb: 2, cc: 3}, {aa: 1, bb: 2, cc: 3});         // true
+areEquals({aa: 1, bb: 2, cc: 3}, {cc: 3, bb: 2, aa: 1});         // true
+areEquals({aa: 1, bb: 2, cc: 3}, {aa: 0, bb: 2, cc: 3});         // false
+
+// true
+areEquals(
+    [{ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}],
+    [{ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}],
+)
+
+// true
+areEquals(
+    {ff: 6, ee: [1, 2, 3, "ewe",
+                 [{ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"],
+                     dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}]], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1},
+    {ff: 6, ee: [1, 2, 3, "ewe",
+                 [{ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"],
+                     dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}]], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1},
+);
+```
+
 
 ---
 
