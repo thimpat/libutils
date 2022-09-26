@@ -1,9 +1,9 @@
 {
-    "lines": 22,
-    "statements": 22,
-    "functions": 4,
-    "branches": 6,
-  "reporter": [
+    "statements": 27,
+    "branches": 14,
+    "functions": 10,
+     "lines": 27,
+ "reporter": [
     "json",
     "text-summary"
   ],
