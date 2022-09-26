@@ -163,6 +163,10 @@ getLocalIp()      // 192.168.1.4
 ### Changelog
 
 ##### current:
+*  areEquals() to compare two variables (Objects, Arrays, etc.)
+
+
+##### 1.9.4:
 *  Make non-generic function getGlobalArguments obsolete
 
 
