@@ -1084,7 +1084,7 @@ let sortEntryByKey = (currentEntity) =>
  * @param {Object} object2
  * @returns {boolean}
  */
-const areObjectEquals = (object1, object2) =>
+const areObjectsEquals = (object1, object2) =>
 {
     let s = (o) => Object.entries(o).sort().map(i =>
     {
@@ -1531,7 +1531,7 @@ module.exports.isItemInList = isItemInList;
 module.exports.doNothing = doNothing;
 module.exports.isObject = isObject;
 
-module.exports.areObjectEquals = areObjectEquals;
+module.exports.areObjectsEquals = areObjectsEquals;
 module.exports.areEquals = areEquals;
 
 module.exports.replaceJsonContent = replaceJsonContent;
