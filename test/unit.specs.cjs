@@ -1,12 +1,33 @@
 const chai = require("chai");
 const expect = chai.expect;
 
-const packageJson = require("../package.json");
-const {areEquals} = require("../lib-utils.cjs");
+const {areEquals, joinPath, normalisePath} = require("../lib-utils.cjs");
 
 describe("In the libUtils library", function ()
 {
     this.timeout(10000);
+
+    describe("the function joinPath", function ()
+    {
+        it("should join two relative paths", function ()
+        {
+            const result = normalisePath("C:\\some\\where\\here");
+            expect(result).to.contain("/some/where/here");
+        });
+
+        it("should join two relative paths", function ()
+        {
+            const result = joinPath("aaa", "vvv");
+            expect(result).to.equal("./aaa/vvv");
+        });
+
+        it("should join paths with a trailing slash", function ()
+        {
+            const result = joinPath("aaa", "vvv/");
+            expect(result).to.equal("./aaa/vvv/");
+        });
+    });
+
 
     describe("the function areEquals", () =>
     {
