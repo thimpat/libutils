@@ -72,3 +72,6 @@ out
 /.eslintrc.cjs
 /.gitignore
 /examples/
+/.nycrc
+/test/
+/.gitlab-ci.yml
