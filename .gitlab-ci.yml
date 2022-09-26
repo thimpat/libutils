@@ -1,0 +1,26 @@
+# All tokens from previous commits must be revoked
+variables:
+  ENV_TEST: "Example"
+
+cache:
+  paths:
+    - node_modules/
+
+test:
+  except:
+    - main
+  script:
+    - echo "Testing"
+    - npm install
+    - npm run build:all
+    - npm test
+
+publish:
+  only:
+    - main
+  script:
+    - echo "Publishing"
+    - npm ci install
+    - npm run build:all
+    - npm test
+

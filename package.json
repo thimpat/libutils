@@ -4,6 +4,7 @@
   "description": "Helper functions",
   "main": "./lib-utils.cjs",
   "scripts": {
+    "test": "nyc --reporter=lcov --reporter=text-summary mocha --exit --sort --exclude test/lib",
     "clean-dirs": "rimraf dist && rimraf esm && rimraf cjs",
     "build:browser": "to-esm lib-utils.cjs --output dist/ --target browser --bundle-browser dist/lib-utils.min.js --update-all --use-bundle",
     "build:esm": "to-esm lib-utils.cjs --target esm --output esm --update-all",
