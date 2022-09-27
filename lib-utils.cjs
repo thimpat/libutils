@@ -1507,19 +1507,9 @@ const getIpInfoList = () =>
  */
 const getLocalIp = () =>
 {
-    try
-    {
-        const list = getIpInfoList();
-        return list[0].address;
-    }
-    catch (e)
-    {
-        console.error({lid: 4321}, e.message);
-    }
-
-    return false;
+    const list = getIpInfoList();
+    return list[0].address;
 };
-
 
 // Generic functions
 module.exports.convertArrayToObject = convertArrayToObject;
