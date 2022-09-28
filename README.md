@@ -3,7 +3,47 @@
 
 A library containing utility functions working in both ESM and CJS (+ some in the browser when compatible):
 
+<br/>
+
 ---
+
+
+
+## Installation
+
+```shell
+npm install @thimpat/libutils
+```
+
+<br/>
+
+---
+
+## Usage
+
+### CJS
+
+```javascript
+const {...} = require("@thimpat/libutils");
+```
+
+<br/>
+
+### ESM
+
+```javascript
+import {...} from "@thimpat/libutils";
+```
+
+<br/>
+
+---
+
+## Helpers
+
+<br/>
+
+
 
 #### normalisePath
 
@@ -184,7 +224,7 @@ getLocalIp()      // 192.168.1.4
 ```
 📁 package                
 │
-└───📝 lib-utils.cjs             ⇽ CJS version      - Node (37.1k unminified)
+└───📝 lib-utils.cjs             ⇽ CJS version      - Node (36.8k unminified)
 │  
 └───📝 lib-utils.mjs             ⇽ ESM version      - Node (35.2k unminified)
 │
