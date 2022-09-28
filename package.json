@@ -14,6 +14,10 @@
   },
   "author": "Patrice Thimothee",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thimpat/libutils.git"
+  },
   "devDependencies": {
     "chai": "^4.3.6",
     "eslint": "^8.17.0",
