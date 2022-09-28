@@ -6,11 +6,10 @@
   "scripts": {
     "test": "nyc --reporter=lcov --reporter=text-summary mocha --exit --sort --exclude \"./{dist|cjs}/**\"",
     "clean-dirs": "rimraf dist && rimraf esm && rimraf cjs",
-    "build:browser": "to-esm lib-utils.cjs --target browser --bundle-browser dist/lib-utils.min.js",
+    "build:browser": "to-esm lib-utils.cjs --target browser --bundle-browser dist/lib-utils.min.mjs",
     "build:esm": "to-esm lib-utils.cjs --target esm --output ./ --update-all",
-    "build:dist": "to-esm lib-utils.cjs --target browser --bundle-esm dist/lib-utils.min.mjs --update-all",
     "build:test": "to-esm test/unit.specs.cjs --target esm",
-    "build:all": "npm run clean-dirs && npm run build:browser && npm run build:esm && npm run build:dist && npm run build:test"
+    "build:all": "npm run clean-dirs && npm run build:browser && npm run build:test"
   },
   "author": "Patrice Thimothee",
   "license": "MIT",
