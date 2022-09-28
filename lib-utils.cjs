@@ -23,11 +23,9 @@ const getGlobalArguments = (function ()
 
 /**
  * @obsolete Use built-in includes
- * @param item
- * @param list
  * @returns {boolean}
  */
-const isItemInList = (item, list = []) =>
+const isItemInList = () =>
 {
     throw new Error(`Obsolete function: Available in version 1.10.3`);
 };
@@ -1497,72 +1495,72 @@ const getLocalIp = () =>
 };
 
 // Generic functions
-module.exports.convertArrayToObject = convertArrayToObject;
-module.exports.mergeDeep = mergeDeep;
-module.exports.sleep = sleep;
-module.exports.convertSessionKeyNameToArg = convertSessionKeyNameToArg;
-module.exports.convertSessionToArg = convertSessionToArg;
-module.exports.isItemInList = isItemInList;
-module.exports.doNothing = doNothing;
-module.exports.isObject = isObject;
+exports.convertArrayToObject = convertArrayToObject;
+exports.mergeDeep = mergeDeep;
+exports.sleep = sleep;
+exports.convertSessionKeyNameToArg = convertSessionKeyNameToArg;
+exports.convertSessionToArg = convertSessionToArg;
+exports.isItemInList = isItemInList;
+exports.doNothing = doNothing;
+exports.isObject = isObject;
 
-module.exports.areObjectsEquals = areObjectsEquals;
-module.exports.areEquals = areEquals;
+exports.areObjectsEquals = areObjectsEquals;
+exports.areEquals = areEquals;
 
-module.exports.replaceJsonContent = replaceJsonContent;
+exports.replaceJsonContent = replaceJsonContent;
 
 // String related functions
-module.exports.generateTempName = generateTempName;
-module.exports.getCommon = getCommon;
-module.exports.getCommonDir = getCommonDir;
-module.exports.addPlural = addPlural;
+exports.generateTempName = generateTempName;
+exports.getCommon = getCommon;
+exports.getCommonDir = getCommonDir;
+exports.addPlural = addPlural;
 
 // URL related functions
-module.exports.convertToUrl = convertToUrl;
-module.exports.fetchSync = fetchSync;
+exports.convertToUrl = convertToUrl;
+exports.fetchSync = fetchSync;
 
 // File related functions
-module.exports.getFilesizeInBytes = getFilesizeInBytes;
-module.exports.getFileContent = getFileContent;
-module.exports.writeFileContent = writeFileContent;
-module.exports.loadJsonFile = loadJsonFile;
-module.exports.saveJsonFile = saveJsonFile;
-module.exports.normaliseFileName = normaliseFileName;
-module.exports.getFilepathCopyName = getFilepathCopyName;
+exports.getFilesizeInBytes = getFilesizeInBytes;
+exports.getFileContent = getFileContent;
+exports.writeFileContent = writeFileContent;
+exports.loadJsonFile = loadJsonFile;
+exports.saveJsonFile = saveJsonFile;
+exports.normaliseFileName = normaliseFileName;
+exports.getFilepathCopyName = getFilepathCopyName;
 
 // Profiling Related functions
-module.exports.getCallInfo = getCallInfo;
-module.exports.getStackInfo = getStackInfo;
+exports.getCallInfo = getCallInfo;
+exports.getStackInfo = getStackInfo;
 
 // CLI Related functions
-module.exports.importLowerCaseOptions = importLowerCaseOptions;
-module.exports.changeOptionsToLowerCase = changeOptionsToLowerCase;
+exports.importLowerCaseOptions = importLowerCaseOptions;
+exports.changeOptionsToLowerCase = changeOptionsToLowerCase;
 
 // Path Related functions
-module.exports.isArgsDir = isArgsDir;
-module.exports.getAppDataDir = getAppDataDir;
-module.exports.createAppDataDir = createAppDataDir;
-module.exports.isConventionalFolder = isConventionalFolder;
-module.exports.resolvePath = resolvePath;
-module.exports.joinPath = joinPath;
-module.exports.normalisePath = normalisePath;
-module.exports.normaliseDirPath = normaliseDirPath;
-module.exports.calculateRelativePath = calculateRelativePath;
-module.exports.calculateCommon = calculateCommon;
-module.exports.normaliseRealPath = normaliseRealPath;
+exports.isArgsDir = isArgsDir;
+exports.getAppDataDir = getAppDataDir;
+exports.createAppDataDir = createAppDataDir;
+exports.isConventionalFolder = isConventionalFolder;
+exports.resolvePath = resolvePath;
+exports.joinPath = joinPath;
+exports.normalisePath = normalisePath;
+exports.normaliseDirPath = normaliseDirPath;
+exports.calculateRelativePath = calculateRelativePath;
+exports.calculateCommon = calculateCommon;
+exports.normaliseRealPath = normaliseRealPath;
 
 // Package related functions
-module.exports.isPackageInstalled = isPackageInstalled;
-module.exports.isCjs = isCjs;
-module.exports.findProjectDir = findProjectDir;
-module.exports.getPackageJson = getPackageJson;
+exports.isPackageInstalled = isPackageInstalled;
+exports.isCjs = isCjs;
+exports.findProjectDir = findProjectDir;
+exports.getPackageJson = getPackageJson;
 
 // Network related functions
-module.exports.getIps = getIps;
-module.exports.getIpInfoList = getIpInfoList;
-module.exports.getLocalIp = getLocalIp;
+exports.getIps = getIps;
+exports.getIpInfoList = getIpInfoList;
+exports.getLocalIp = getLocalIp;
 
 // Obsolete
-module.exports.getGlobalArguments = getGlobalArguments;
+exports.getGlobalArguments = getGlobalArguments;
 
 
