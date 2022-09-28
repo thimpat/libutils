@@ -5,7 +5,7 @@ A library containing utility functions working in both ESM and CJS (+ some in th
 
 ---
 
-### normalisePath
+#### normalisePath
 
 * Convert paths by replacing backward slashes "\" with forward slashes "/"
 * Always keeps the last "/" for directories
@@ -14,9 +14,11 @@ A library containing utility functions working in both ESM and CJS (+ some in th
 normalisePath("C:\\some\\where\\here")      // C:/some/where/here
 ```
 
+<br/>
+
 ---
 
-### joinPath
+#### joinPath
 
 * Join paths following the conventions above (normalisePath)
 
@@ -25,18 +27,23 @@ joinPath("aaa", "vvv")                      // ./aaa/vvv
 joinPath("aaa", "vvv/")                     // ./aaa/vvv/
 ```
 
+<br/>
+
 ---
 
-### isConventionalFolder
+#### isConventionalFolder
 
 ###### If source finishes with a "/", it's a folder, otherwise, it's not.
 
 ```javascript
 isConventionalFolder("C:\\some\\where\\here\\")      // true
 ```
+
+<br/>
+
 ---
 
-### resolvePath
+#### resolvePath
 
 ###### Resolve path
 
@@ -44,21 +51,27 @@ isConventionalFolder("C:\\some\\where\\here\\")      // true
 isConventionalFolder("\\where\\here\\")      // /home/user/some/where/here/
 ```
 
+<br/>
+
 ---
 
-### getAppDataDir
+#### getAppDataDir
 
 ###### Returns OS data dir for the application
 
+<br/>
+
 ---
 
-### sleep
+#### sleep
 
 ###### Delay code execution for a number of milliseconds
 
+<br/>
+
 ---
 
-### convertToUrl
+#### convertToUrl
 
 ```javascript
 convertToUrl({protocol, host, port, pathname})
@@ -69,9 +82,11 @@ convertToUrl({protocol: "https", host: "somewhere"})                    // https
 convertToUrl({protocol: "https", host: "somewhere", pathname: "here"})  // https://somewhere/here
 ```
 
+<br/>
+
 ---
 
-### areEquals
+#### areEquals
 
 ###### Compare two inputs (Objects, Arrays, etc.)
 
@@ -103,24 +118,27 @@ areEquals(
 );
 ```
 
+<br/>
 
 ---
 
-### calculateRelativePath
+#### calculateRelativePath
 
 ###### Calculate path to another path from a source
 
-
+<br/>
 
 ---
 
-### calculateCommon
+#### calculateCommon
 
 ###### Returns the longest common directory amongst a list of files and folders
 
+<br/>
+
 ---
 
-### getPackageJson
+#### getPackageJson
 
 Returns package.json content
 
@@ -145,9 +163,11 @@ const packageJson = getPackageJson({root: false})           // Content of /home/
 
 > ###### _* Default value for "root" is false_
 
+<br/>
+
 ---
 
-### getLocalIp
+#### getLocalIp
 
 ###### Try to best guess the machine local IP
 
@@ -155,10 +175,29 @@ const packageJson = getPackageJson({root: false})           // Content of /home/
 getLocalIp()      // 192.168.1.4
 ```
 
+<br/>
 
+---
 
+### Package
 
-...
+```
+📁 package                
+│
+└───📝 lib-utils.cjs             ⇽ CJS version      - Node (37.1k unminified)
+│  
+└───📝 lib-utils.mjs             ⇽ ESM version      - Node (35.2k unminified)
+│
+└───📁 dist
+│   │
+│   │ 📝 lib-utils.mjs           ⇽ ESM version      - Browser (35.3k unminified)
+│   │ 📝 lib-utils.min.mjs       ⇽ ESM version      - Browser (10.5k minified)
+
+```
+
+<br/>
+
+---
 
 ### Changelog
 
