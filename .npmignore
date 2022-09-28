@@ -76,3 +76,4 @@ out
 /test/
 /.gitlab-ci.yml
 /.run/
+/.github/
