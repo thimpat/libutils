@@ -1,11 +1,14 @@
 const chai = require("chai");
 const expect = chai.expect;
 
-const {areEquals, joinPath, normalisePath, getGlobalArguments, sleep, getLocalIp, getIps} = require("../lib-utils.cjs");
+const {
+    areEquals, joinPath, normalisePath, getGlobalArguments, sleep, getLocalIp, getIps, convertToUrl, isObject,
+    mergeDeep, convertArrayToObject
+} = require("../lib-utils.cjs");
 
 describe("In the libUtils library", function ()
 {
-    this.timeout(10000);
+    this.timeout(5000);
 
     describe("The function getGlobalArguments", () =>
     {
@@ -15,9 +18,88 @@ describe("In the libUtils library", function ()
         });
     });
 
+    describe("The function isObject", () =>
+    {
+        it("should be false when input is a null", () =>
+        {
+            const result = isObject(null);
+            expect(result).to.be.false;
+        });
+
+        it("should be false when input is a string", () =>
+        {
+            const result = isObject("aa");
+            expect(result).to.be.false;
+        });
+
+        it("should be false when input is an array", () =>
+        {
+            const result = isObject(["aa"]);
+            expect(result).to.be.false;
+        });
+
+        it("should be false when input is an object", () =>
+        {
+            const result = isObject({aa: 1});
+            expect(result).to.be.true;
+        });
+
+    });
+
+    describe("The function convertArrayToObject", () =>
+    {
+        it("should convert an array to object", () =>
+        {
+            const result = convertArrayToObject([1, 2, 3]);
+            expect(result).to.eql({
+                "1": 0,
+                "2": 1,
+                "3": 2
+            });
+        });
+    });
+
+    describe("The function mergeDeep", () =>
+    {
+        it("should return the same object when the other is null", () =>
+        {
+            const obj1 = {aa: 1};
+            const obj2 = null;
+            const res = mergeDeep(obj1, obj2);
+            expect(res).to.equal(obj1);
+        });
+
+        it("should merge two objects", () =>
+        {
+            const obj1 = {aa: 1};
+            const obj2 = {bb: 2};
+            const res = mergeDeep(obj1, obj2);
+            expect(res).to.eql({aa: 1, bb: 2});
+        });
+
+        it("should merge two nested objects", () =>
+        {
+            const obj1 = {aa: 1, cc: {dd: 3}};
+            const obj2 = {bb: 2, ee: {ff: 4}};
+            const res = mergeDeep(obj1, obj2);
+            expect(res).to.eql({
+                "aa": 1,
+                "bb": 2,
+                "cc": {
+                    "dd": 3
+                },
+                "ee": {
+                    "ff": 4
+                }
+            });
+        });
+
+
+    });
+
     describe("The function sleep", () =>
     {
-        it("should do a 1 second pause",  async() =>
+        it("should do a 1 second pause", async () =>
         {
             const d1 = new Date();
             await sleep(300);
@@ -349,18 +431,18 @@ describe("In the libUtils library", function ()
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
-                            ff                                            : 6, ee                                     : [1, 2, 3, "ewe", "dfdf"],
+                            ff                                            : 6, ee: [1, 2, 3, "ewe", "dfdf"],
                             dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1
                         }
                         ]
                     ], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1
                 },
                 {
-                    ff                                               : 6, ee                                        : [
+                    ff                                               : 6, ee: [
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
-                            ff                                            : 6, ee                                     : [1, 2, 3, "ewe", "dfdf"],
+                            ff                                            : 6, ee: [1, 2, 3, "ewe", "dfdf"],
                             dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1
                         }
                         ]
@@ -403,9 +485,36 @@ describe("In the libUtils library", function ()
     });
 
 
+    describe("The function convertToUrl", () =>
+    {
+        it("should return http://localhost:8877/", async () =>
+        {
+            const str = convertToUrl({host: "localhost", port: 8877});
+            expect(str).to.equal("http://localhost:8877/");
+        });
+
+        it("should return https://localhost:8877/", async () =>
+        {
+            const str = convertToUrl({protocol: "https", host: "localhost", port: 8877});
+            expect(str).to.equal("https://localhost:8877/");
+        });
+
+        it("should return https://somewhere/", async () =>
+        {
+            const str = convertToUrl({protocol: "https", host: "somewhere"});
+            expect(str).to.equal("https://somewhere/");
+        });
+
+        it("should return https://somewhere/here", async () =>
+        {
+            const str = convertToUrl({protocol: "https", host: "somewhere", pathname: "here"});
+            expect(str).to.equal("https://somewhere/here");
+        });
+    });
+
     describe("The function getIps", () =>
     {
-        it("should return an ip",  async() =>
+        it("should return an ip", async () =>
         {
             const ips = getIps();
             expect(Object.keys(ips).length).to.be.greaterThan(0);
@@ -414,7 +523,7 @@ describe("In the libUtils library", function ()
 
     describe("The function getLocalIp", () =>
     {
-        it("should return an ip",  async() =>
+        it("should return an ip", async () =>
         {
             const localIp = getLocalIp();
             expect(localIp).to.match(/\d+\.\d+\.\d+\.\d+/);
