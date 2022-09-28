@@ -70,3 +70,4 @@ dist
 /dist/
 /esm/
 /cjs/lib-utils.min.cjs
+/lib-utils.mjs
