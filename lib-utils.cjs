@@ -1,7 +1,3 @@
-/**
- *
- */
-
 // ==================================================================
 // Built-ins
 // ==================================================================
@@ -11,7 +7,7 @@ const path = require("path");
 const fs = require("fs");
 const https = require("https");
 const crypto = require("crypto");
-const execSync = require("child_process").execSync;
+const {execSync} = require("child_process");
 /** to-esm-browser: end-remove **/
 
 // ==================================================================
