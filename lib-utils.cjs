@@ -28,7 +28,9 @@ const getGlobalArguments = (function ()
 // ==================================================================
 // Constants
 // ==================================================================
-const {PATH_ERRORS} = require("./constants/constants.cjs");
+const PATH_ERRORS = {
+    DATA_DIR_FAILED: "Failed to access application data directory"
+};
 
 // ==================================================================
 // Generic functions
@@ -60,7 +62,7 @@ function convertArrayToObject(array, defaultValue = undefined)
 
 /**
  * Simple object check
- * @param item
+ * @param {*} item
  * @returns {boolean}
  */
 function isObject(item)
