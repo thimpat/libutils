@@ -163,6 +163,11 @@ getLocalIp()      // 192.168.1.4
 ### Changelog
 
 ##### current:
+*  Make the function isItemInList() obsolete
+   (The function was meant to be more expressive, but libutils is becoming more generic)
+   - Use JavaScript built in [].includes() instead
+
+##### 1.10.0:
 *  areEquals() to compare two variables (Objects, Arrays, etc.)
 
 
