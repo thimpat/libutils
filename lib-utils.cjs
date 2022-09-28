@@ -25,6 +25,17 @@ const getGlobalArguments = (function ()
     throw new Error(`Obsolete function: Available in version 1.9.3`);
 });
 
+/**
+ * @obsolete Use built-in includes
+ * @param item
+ * @param list
+ * @returns {boolean}
+ */
+const isItemInList = (item, list = []) =>
+{
+    throw new Error(`Obsolete function: Available in version 1.10.3`);
+};
+
 // ==================================================================
 // Constants
 // ==================================================================
@@ -35,6 +46,7 @@ const PATH_ERRORS = {
 // ==================================================================
 // Generic functions
 // ==================================================================
+
 /**
  * Delay code execution for a number of milliseconds
  * @param {number} ms Number of milliseconds to delay the code
@@ -464,31 +476,6 @@ const resolvePath = (filepath) =>
     filepath = path.resolve(filepath);
     filepath = normalisePath(filepath, {isFolder});
     return filepath;
-};
-
-/**
- *
- * @param item
- * @param list
- * @returns {boolean}
- */
-const isItemInList = (item, list = []) =>
-{
-    if (!item)
-    {
-        return false;
-    }
-
-    if (!Array.isArray(list))
-    {
-        throw new Error("list should be an array");
-    }
-
-    if (!list || !list.length)
-    {
-        return false;
-    }
-    return list.includes(item);
 };
 
 /**
