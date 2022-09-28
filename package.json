@@ -24,7 +24,7 @@
     "nyc": "^15.1.0",
     "to-esm": "^2.21.0"
   },
-  "module": "./esm/lib-utils.mjs",
+  "module": "./lib-utils.mjs",
   "type": "module",
   "exports": {
     "require": "./lib-utils.cjs",
