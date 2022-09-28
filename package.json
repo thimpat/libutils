@@ -6,7 +6,7 @@
   "scripts": {
     "test": "nyc --reporter=lcov --reporter=text-summary mocha --exit --sort --exclude \"./{dist|cjs}/**\"",
     "clean-dirs": "rimraf dist && rimraf esm && rimraf cjs",
-    "build:browser": "to-esm lib-utils.cjs --target browser --bundle-browser dist/lib-utils.min.mjs",
+    "build:browser": "to-esm lib-utils.cjs --output dist/ --target browser --bundle-browser dist/lib-utils.min.mjs",
     "build:esm": "to-esm lib-utils.cjs --target esm --output ./ --update-all",
     "build:test": "to-esm test/unit.specs.cjs --target esm",
     "build:all": "npm run clean-dirs && npm run build:browser && npm run build:test"
