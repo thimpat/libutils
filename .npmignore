@@ -75,3 +75,4 @@ out
 /.nycrc
 /test/
 /.gitlab-ci.yml
+/.run/
