@@ -3,7 +3,7 @@ const expect = chai.expect;
 
 const {
     areEquals, joinPath, normalisePath, getGlobalArguments, sleep, getLocalIp, getIps, convertToUrl, isObject,
-    mergeDeep, convertArrayToObject
+    mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon
 } = require("../lib-utils.cjs");
 
 describe("In the libUtils library", function ()
@@ -12,9 +12,17 @@ describe("In the libUtils library", function ()
 
     describe("The function getGlobalArguments", () =>
     {
-        it("to throw an exception", () =>
+        it("should throw an exception when used", () =>
         {
             expect(getGlobalArguments).to.throw("Obsolete function: Available in version 1.9.3");
+        });
+    });
+
+    describe("The function isItemInList", () =>
+    {
+        it("should throw an exception when used", () =>
+        {
+            expect(isItemInList).to.throw("Obsolete function: Available in version 1.10.3");
         });
     });
 
@@ -427,7 +435,7 @@ describe("In the libUtils library", function ()
         {
             const result = areEquals(
                 {
-                    ff                                               : 6, ee: [
+                    ff                                               : 6, ee                                        : [
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
@@ -438,11 +446,11 @@ describe("In the libUtils library", function ()
                     ], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1
                 },
                 {
-                    ff                                               : 6, ee: [
+                    ff                                               : 6, ee                                        : [
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
-                            ff                                            : 6, ee: [1, 2, 3, "ewe", "dfdf"],
+                            ff                                            : 6, ee                                     : [1, 2, 3, "ewe", "dfdf"],
                             dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1
                         }
                         ]
@@ -456,11 +464,11 @@ describe("In the libUtils library", function ()
         {
             const result = areEquals(
                 {
-                    ff                                               : 6, ee                                        : [
+                    ff                                               : 6, ee: [
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
-                            ff                                            : 6, ee                                     : [1, 2, 3, "ewe", "dfdf"],
+                            ff                                            : 6, ee: [1, 2, 3, "ewe", "dfdf"],
                             dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1
                         }
                         ]
@@ -471,7 +479,7 @@ describe("In the libUtils library", function ()
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
-                            ff                                     : 6, ee                              : [1, 2, 3, "ewe", "dfdf"],
+                            ff                                     : 6, ee: [1, 2, 3, "ewe", "dfdf"],
                             dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2
                         }
                         ]
@@ -510,6 +518,96 @@ describe("In the libUtils library", function ()
             const str = convertToUrl({protocol: "https", host: "somewhere", pathname: "here"});
             expect(str).to.equal("https://somewhere/here");
         });
+    });
+
+    describe("The function getCommon", () =>
+    {
+        it("should return the common part of two strings", () =>
+        {
+            const dir = getCommon("abcde12345", "abcde54321");
+            expect(dir).to.equal("12345");
+        });
+
+        it("should return an empty string when both strings are empty", () =>
+        {
+            const dir = getCommon("", "");
+            expect(dir).to.equal("");
+        });
+
+    });
+
+    describe("The function getCommonDir", () =>
+    {
+        it("should return the common part between two directories amongst a list of paths", () =>
+        {
+            const dir = getCommonDir("/a/b/c/d", "/a/b/c/d/e");
+            expect(dir).to.equal("/a/b/c/d");
+        });
+
+        it("should return the passed directory when both paths are the same", () =>
+        {
+            const dir = getCommonDir("/a/b/c/d", "/a/b/c/d");
+            expect(dir).to.equal("/a/b/c/d");
+        });
+
+        it("should return ./ when one of the paths is empty", () =>
+        {
+            const dir = getCommonDir("", "/a/b/c/d");
+            expect(dir).to.equal("./");
+        });
+
+    });
+
+    describe("The function calculateCommon", () =>
+    {
+        it("should return the common part between multiple file paths", () =>
+        {
+            const dir = calculateCommon(["/a/b/c/d", "/a/b/c/d/e", "/a/b/c/d/e/g/h/i"]);
+            expect(dir).to.equal("/a/b/c/");
+        });
+
+        it("should return the common part between multiple directories", () =>
+        {
+            const dir = calculateCommon(["/a/b/c/d/", "/a/b/c/d/e/", "/a/b/c/d/e/g/h/i/"]);
+            expect(dir).to.equal("/a/b/c/d/");
+        });
+
+        it("should return the original path when only one argument is passed", () =>
+        {
+            const dir = calculateCommon(["/a/b/c/d/"]);
+            expect(dir).to.equal("/a/b/c/d/");
+        });
+
+        it("should return ./ when the list of paths is one empty string", () =>
+        {
+            const dir = calculateCommon([""]);
+            expect(dir).to.equal("./");
+        });
+
+        it("should return the correct common directory with Windows formatted paths", () =>
+        {
+            const dir = calculateCommon([
+                    "C:/projects/genserve/src/01-assets/templates/project",
+                    "C:/projects/genserve/src/01-assets/templates/project/build",
+                    "C:/projects/genserve/src/01-assets/templates/project/dynamic",
+                    "C:/projects/genserve/src/01-assets/templates/project/dynamic/errors.server.cjs",
+                    "C:/projects/genserve/src/01-assets/templates/project/dynamic/index.server.cjs",
+                    "C:/projects/genserve/src/01-assets/templates/project/package.json",
+                    "C:/projects/genserve/src/01-assets/templates/project/plugins",
+                    "C:/projects/genserve/src/01-assets/templates/project/plugins/stats.cjs",
+                    "C:/projects/genserve/src/01-assets/templates/project/public",
+                    "C:/projects/genserve/src/01-assets/templates/project/public/css",
+                    "C:/projects/genserve/src/01-assets/templates/project/public/css/styles.css",
+                    "C:/projects/genserve/src/01-assets/templates/project/public/favicon.png",
+                    "C:/projects/genserve/src/01-assets/templates/project/public/genserve-errors.log",
+                    "C:/projects/genserve/src/01-assets/templates/project/public/index.html",
+                    "C:/projects/genserve/src/01-assets/templates/project/start",
+                    "C:/projects/genserve/src/01-assets/templates/project/start/start.cjs"
+                ]
+            );
+            expect(dir).to.equal("C:/projects/genserve/src/01-assets/templates/");
+        });
+
     });
 
     describe("The function getIps", () =>
