@@ -3,10 +3,10 @@ const expect = chai.expect;
 
 const {
     areEquals, joinPath, normalisePath, getGlobalArguments, sleep, getLocalIp, getIps, convertToUrl, isObject,
-    mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon
+    mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir
 } = require("../lib-utils.cjs");
 
-describe("In the libUtils library", function ()
+describe("Unit: In the libUtils library", function ()
 {
     this.timeout(5000);
 
@@ -608,6 +608,24 @@ describe("In the libUtils library", function ()
             expect(dir).to.equal("C:/projects/genserve/src/01-assets/templates/");
         });
 
+    });
+
+    describe("The function getAppDataDir", () =>
+    {
+        it("should return the app data dir", async () =>
+        {
+            const dir = getAppDataDir("jjjjj");
+            const tmp = process.platform === "win32" ? "/AppData/Roaming/" : "/tmp";
+            expect(dir)
+                .to.contain(tmp)
+                .to.contain("/jjjjj");
+        });
+
+        it("should be null when no app name is passed", async () =>
+        {
+            const dir = getAppDataDir();
+            expect(dir).to.equal(null);
+        });
     });
 
     describe("The function getIps", () =>
