@@ -3,7 +3,8 @@ const expect = chai.expect;
 
 const {
     areEquals, joinPath, normalisePath, getGlobalArguments, sleep, getLocalIp, getIps, convertToUrl, isObject,
-    mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir
+    mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir,
+    importLowerCaseOptions, changeOptionsToLowerCase, addPlural
 } = require("../lib-utils.cjs");
 
 describe("Unit: In the libUtils library", function ()
@@ -439,7 +440,7 @@ describe("Unit: In the libUtils library", function ()
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
-                            ff                                            : 6, ee: [1, 2, 3, "ewe", "dfdf"],
+                            ff                                            : 6, ee                                     : [1, 2, 3, "ewe", "dfdf"],
                             dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1
                         }
                         ]
@@ -450,7 +451,7 @@ describe("Unit: In the libUtils library", function ()
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
-                            ff                                            : 6, ee                                     : [1, 2, 3, "ewe", "dfdf"],
+                            ff                                            : 6, ee: [1, 2, 3, "ewe", "dfdf"],
                             dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1
                         }
                         ]
@@ -468,7 +469,7 @@ describe("Unit: In the libUtils library", function ()
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
-                            ff                                            : 6, ee: [1, 2, 3, "ewe", "dfdf"],
+                            ff                                            : 6, ee                                     : [1, 2, 3, "ewe", "dfdf"],
                             dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1
                         }
                         ]
@@ -479,7 +480,7 @@ describe("Unit: In the libUtils library", function ()
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
-                            ff                                     : 6, ee: [1, 2, 3, "ewe", "dfdf"],
+                            ff                                     : 6, ee                              : [1, 2, 3, "ewe", "dfdf"],
                             dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2
                         }
                         ]
@@ -518,6 +519,108 @@ describe("Unit: In the libUtils library", function ()
             const str = convertToUrl({protocol: "https", host: "somewhere", pathname: "here"});
             expect(str).to.equal("https://somewhere/here");
         });
+    });
+
+    describe("The function changeOptionsToLowerCase", () =>
+    {
+        it("should change the keys to lowercase", () =>
+        {
+            const cliOptions = changeOptionsToLowerCase({
+                    ROOTDIR: "aaa",
+                    NOhEADER: "aaa",
+                    untouched: "aaa",
+                },
+            );
+
+            expect(cliOptions).to.have.keys([
+                "ROOTDIR", "NOhEADER",
+                "noheader",
+                "rootdir",
+                "untouched"
+            ]);
+        });
+    });
+
+    describe("The function addPlural", () =>
+    {
+        it("should add an s to a word", () =>
+        {
+            const str = addPlural(10, "word");
+            expect(str).to.equal("s");
+        });
+
+        it("should add an s to a word with the 0 numeral", () =>
+        {
+            const str = addPlural(0, "word");
+            expect(str).to.equal("s");
+        });
+
+        it("should not add an s to a word with the 1 numeral", () =>
+        {
+            const str = addPlural(1, "word");
+            expect(str).to.equal("");
+        });
+
+        it("should add an s to a verb", () =>
+        {
+            const str = addPlural(1, "verb");
+            expect(str).to.equal("s");
+        });
+
+        it("should not add an s to a verb", () =>
+        {
+            const str = addPlural(2, "verb");
+            expect(str).to.equal("");
+        });
+    });
+
+    describe("The function importLowerCaseOptions", () =>
+    {
+        it("should change the case according to the passed argument", () =>
+        {
+            const cliOptions = importLowerCaseOptions({
+                    ROOTDIR: "aaa",
+                    NOhEADER: "aaa",
+                    untouched: "aaa",
+                    "hi-there": "aaa",
+                    "HELLO-YOU": "aaa"
+                },
+                "rootDir, noHeader, HiThere", "hello-you"
+            );
+
+            expect(cliOptions).to.have.keys([
+                "hello-you",
+                "hi-there",
+                "noHeader",
+                "rootDir",
+                "untouched"
+            ]);
+        });
+
+        it("should change the case according to the passed argument and replace dashes", () =>
+        {
+            const cliOptions = importLowerCaseOptions({
+                    ROOTDIR: "aaa",
+                    NOhEADER: "aaa",
+                    untouched: "aaa",
+                    "hi-there": "aaa",
+                    "HELLO-YOU": "aaa"
+                },
+                "rootDir, noHeader, HiThere, helloyou",
+                {
+                    replaceDash: true, uselowercase: true
+                }
+            );
+
+            expect(cliOptions).to.have.keys([
+                "HiThere",
+                "helloyou",
+                "noHeader",
+                "rootDir",
+                "untouched"
+            ]);
+        });
+
     });
 
     describe("The function getCommon", () =>
