@@ -174,6 +174,10 @@ areEquals(
 
 ###### Returns the longest common directory amongst a list of files and folders
 
+```javascript
+calculateCommon(["/a/b/c/d", "/a/b/c/d/e", "/a/b/c/d/e/g/h/i"]);        // => "/a/b/c/"
+```
+
 <br/>
 
 ---
