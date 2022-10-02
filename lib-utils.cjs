@@ -654,11 +654,11 @@ function addPlural(number, type = "word")
 // ==================================================================
 /**
  * Change cli options to lower case
- * @see [to-esm module for a use case]
- * @param rawCliOptions
- * @returns {{}}
  * @param rawObject
  * @param unchangedList
+ * @param replaceDash
+ * @param uselowercase
+ * @returns {{}}
  */
 const importLowerCaseOptions = (rawObject, unchangedList = "", {replaceDash = false, uselowercase = true} = {}) =>
 {
