@@ -263,6 +263,10 @@ getLocalIp()      // 192.168.1.4
 ### Changelog
 
 ##### current:
+*  Add function convertStringArgumentToArray
+
+
+##### 1.10.4:
 *  Make the function isItemInList() obsolete
    (The function was meant to be more expressive, but libutils is becoming more generic)
    - Use JavaScript built in [].includes() instead
