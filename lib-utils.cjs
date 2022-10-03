@@ -66,6 +66,65 @@ function convertArrayToObject(array, defaultValue = undefined)
     return object;
 }
 
+function pushArg(args, str)
+{
+    str = str.trim();
+
+    if (!str)
+    {
+        return;
+    }
+
+    args.push(str);
+}
+
+function convertStringArgumentToArray(str)
+{
+    const symbols = [`"`, "'", "`"];
+    const separators = [" "];
+
+    let focusedChar = "";
+    const args = [];
+    let indexStart = 0;
+    let i;
+    for (i = 0; i < str.length; ++i)
+    {
+        const char = str[i];
+
+        if (focusedChar)
+        {
+            if (char !== focusedChar)
+            {
+                continue;
+            }
+
+            focusedChar = "";
+            pushArg(args, str.substring(indexStart + 1, i));
+            indexStart = i + 1;
+            continue;
+        }
+
+        if (separators.includes(char))
+        {
+            pushArg(args, str.substring(indexStart, i));
+            indexStart = i + 1;
+            continue;
+        }
+
+        if (symbols.includes(char))
+        {
+            pushArg(args, str.substring(indexStart, i));
+            indexStart = i;
+            focusedChar = char;
+        }
+
+    }
+
+    pushArg(args, str.substring(indexStart));
+
+    return args;
+}
+
 /**
  * Simple object check
  * @param {*} item
@@ -1496,6 +1555,8 @@ const getLocalIp = () =>
 
 // Generic functions
 exports.convertArrayToObject = convertArrayToObject;
+exports.convertStringArgumentToArray = convertStringArgumentToArray;
+
 exports.mergeDeep = mergeDeep;
 exports.sleep = sleep;
 exports.convertSessionKeyNameToArg = convertSessionKeyNameToArg;
