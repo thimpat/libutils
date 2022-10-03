@@ -4,7 +4,7 @@ const expect = chai.expect;
 const {
     areEquals, joinPath, normalisePath, getGlobalArguments, sleep, getLocalIp, getIps, convertToUrl, isObject,
     mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir,
-    importLowerCaseOptions, changeOptionsToLowerCase, addPlural
+    importLowerCaseOptions, changeOptionsToLowerCase, addPlural, convertStringArgumentToArray, generateTempName
 } = require("../lib-utils.cjs");
 
 describe("Unit: In the libUtils library", function ()
@@ -68,6 +68,47 @@ describe("Unit: In the libUtils library", function ()
         });
     });
 
+    describe("The function convertStringArgumentToArray", () =>
+    {
+        it("should convert a command line", () =>
+        {
+            const result = convertStringArgumentToArray("ls -la");
+            expect(result).to.eql(["ls", "-la"]);
+        });
+
+        it("should convert a command line with equal signs", () =>
+        {
+            const result = convertStringArgumentToArray("to-esm --strict=true");
+            expect(result).to.eql(["to-esm", "--strict=true"]);
+        });
+
+        it("should convert a command line with quote", () =>
+        {
+            const result = convertStringArgumentToArray("'C:/Users/pat/AppData/Local/Google/Chrome SxS/Application/chrome.exe' --ignore-certificate-errors");
+            expect(result).to.eql([
+                "C:/Users/pat/AppData/Local/Google/Chrome SxS/Application/chrome.exe",
+                "--ignore-certificate-errors"
+            ]);
+        });
+
+        it("should convert a command line with escape double quote", () =>
+        {
+            // eslint-disable-next-line max-len
+            const result = convertStringArgumentToArray("start --blockmode --openApp start/start.cjs --openApp start/start.cjs --openApp \"'C:/Users/pat/AppData/Local/Google/Chrome SxS/Application/chrome.exe'\" --ignore-certificate-errors  ");
+            expect(result).to.eql([
+                "start",
+                "--blockmode",
+                "--openApp",
+                "start/start.cjs",
+                "--openApp",
+                "start/start.cjs",
+                "--openApp",
+                "'C:/Users/pat/AppData/Local/Google/Chrome SxS/Application/chrome.exe'",
+                "--ignore-certificate-errors"
+            ]);
+        });
+    });
+
     describe("The function mergeDeep", () =>
     {
         it("should return the same object when the other is null", () =>
@@ -101,6 +142,53 @@ describe("Unit: In the libUtils library", function ()
                     "ff": 4
                 }
             });
+        });
+
+
+    });
+
+    describe("The function generateTempName", () =>
+    {
+        it("should generate a random name", () =>
+        {
+            const temp = generateTempName();
+            expect(temp).to.match(/\w+/);
+        });
+
+        it("should generate a prefixed random name", () =>
+        {
+            const temp = generateTempName({prefix: "ppp"});
+            expect(temp).to.match(/ppp\w+/);
+        });
+
+        it("should generate a suffixed random name", () =>
+        {
+            const temp = generateTempName({suffix: "rrr"});
+            expect(temp).to.match(/\w+rrr/);
+        });
+
+        it("should generate a random name less than 12 chars long", () =>
+        {
+            const temp = generateTempName({size: 8});
+            expect(temp.length).to.be.lessThanOrEqual(12);
+        });
+
+        it("should generate a random name 14 chars long", () =>
+        {
+            const temp = generateTempName({prefix: "ppp", suffix: "rrr", size: 8});
+            expect(temp.length).to.equal(14);
+        });
+
+        it("should return the prefix value", () =>
+        {
+            const temp = generateTempName( {size: 0, prefix: "aaa"});
+            expect(temp).to.match(/\w+/);
+        });
+
+        it("should generate a suffixed random name", () =>
+        {
+            const temp = generateTempName({prefix: "ppp", suffix: "rrr", size: 8, replacementChar: "p-"});
+            expect(temp).to.match(/ppp\w+/);
         });
 
 
@@ -465,7 +553,7 @@ describe("Unit: In the libUtils library", function ()
         {
             const result = areEquals(
                 {
-                    ff                                               : 6, ee: [
+                    ff                                               : 6, ee                                        : [
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
@@ -480,7 +568,7 @@ describe("Unit: In the libUtils library", function ()
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
-                            ff                                     : 6, ee                              : [1, 2, 3, "ewe", "dfdf"],
+                            ff                                     : 6, ee: [1, 2, 3, "ewe", "dfdf"],
                             dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2
                         }
                         ]
@@ -526,8 +614,8 @@ describe("Unit: In the libUtils library", function ()
         it("should change the keys to lowercase", () =>
         {
             const cliOptions = changeOptionsToLowerCase({
-                    ROOTDIR: "aaa",
-                    NOhEADER: "aaa",
+                    ROOTDIR  : "aaa",
+                    NOhEADER : "aaa",
                     untouched: "aaa",
                 },
             );
@@ -579,10 +667,10 @@ describe("Unit: In the libUtils library", function ()
         it("should change the case according to the passed argument", () =>
         {
             const cliOptions = importLowerCaseOptions({
-                    ROOTDIR: "aaa",
-                    NOhEADER: "aaa",
-                    untouched: "aaa",
-                    "hi-there": "aaa",
+                    ROOTDIR    : "aaa",
+                    NOhEADER   : "aaa",
+                    untouched  : "aaa",
+                    "hi-there" : "aaa",
                     "HELLO-YOU": "aaa"
                 },
                 "rootDir, noHeader, HiThere", "hello-you"
@@ -600,10 +688,10 @@ describe("Unit: In the libUtils library", function ()
         it("should change the case according to the passed argument and replace dashes", () =>
         {
             const cliOptions = importLowerCaseOptions({
-                    ROOTDIR: "aaa",
-                    NOhEADER: "aaa",
-                    untouched: "aaa",
-                    "hi-there": "aaa",
+                    ROOTDIR    : "aaa",
+                    NOhEADER   : "aaa",
+                    untouched  : "aaa",
+                    "hi-there" : "aaa",
                     "HELLO-YOU": "aaa"
                 },
                 "rootDir, noHeader, HiThere, helloyou",
