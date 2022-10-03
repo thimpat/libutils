@@ -1,4 +1,8 @@
 
+[![Test workflow](https://github.com/thimpat/libutils/actions/workflows/test.yml/badge.svg)](https://github.com/thimpat/libutils/actions/workflows/test.yml)
+[![Version workflow](https://github.com/thimpat/libutils/actions/workflows/versioning.yml/badge.svg)](https://github.com/thimpat/libutils/actions/workflows/versioning.yml)
+
+
 ## Description
 
 A library containing utility functions working in both ESM and CJS (+ some in the browser when compatible):
