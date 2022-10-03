@@ -107,6 +107,23 @@ isConventionalFolder("\\where\\here\\")      // /home/user/some/where/here/
 
 ###### Delay code execution for a number of milliseconds
 
+```javascript
+await sleep(5000);                                                      // 5 seconds
+```
+
+<br/>
+
+---
+
+#### convertStringArgumentToArray
+
+###### Convert a string into an argument list
+
+```javascript
+// ["/Users/me/Chrome SxS/Application/chrome.exe", "--my-errors", "--aa=true"];
+convertStringArgumentToArray("'/Users/me/Chrome SxS/Application/chrome.exe' --my-errors --aa=true");
+```
+
 <br/>
 
 ---
@@ -228,14 +245,14 @@ getLocalIp()      // 192.168.1.4
 ```
 📁 package                
 │
-└───📝 lib-utils.cjs             ⇽ CJS version      - Node (36.8k unminified)
+└───📝 lib-utils.cjs             ⇽ CJS version      - Node (37.9k unminified)
 │  
-└───📝 lib-utils.mjs             ⇽ ESM version      - Node (35.2k unminified)
+└───📝 lib-utils.mjs             ⇽ ESM version      - Node (36.3k unminified)
 │
 └───📁 dist
 │   │
-│   │ 📝 lib-utils.mjs           ⇽ ESM version      - Browser (35.3k unminified)
-│   │ 📝 lib-utils.min.mjs       ⇽ ESM version      - Browser (10.5k minified)
+│   │ 📝 lib-utils.mjs           ⇽ ESM version      - Browser (36.3k unminified)
+│   │ 📝 lib-utils.min.mjs       ⇽ ESM version      - Browser (10.8k minified)
 
 ```
 
