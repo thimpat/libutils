@@ -182,7 +182,7 @@ describe("Unit: In the libUtils library", function ()
 
         it("should return the prefix value", () =>
         {
-            const temp = generateTempName( {size: 0, prefix: "aaa"});
+            const temp = generateTempName({size: 0, prefix: "aaa"});
             expect(temp).to.match(/\w+/);
         });
 
@@ -525,7 +525,7 @@ describe("Unit: In the libUtils library", function ()
         {
             const result = areEquals(
                 {
-                    ff                                               : 6, ee                                        : [
+                    ff                                               : 6, ee: [
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
@@ -536,7 +536,7 @@ describe("Unit: In the libUtils library", function ()
                     ], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1
                 },
                 {
-                    ff                                               : 6, ee                                        : [
+                    ff                                               : 6, ee: [
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
@@ -558,7 +558,7 @@ describe("Unit: In the libUtils library", function ()
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
-                            ff                                            : 6, ee                                     : [1, 2, 3, "ewe", "dfdf"],
+                            ff                                            : 6, ee: [1, 2, 3, "ewe", "dfdf"],
                             dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1
                         }
                         ]
@@ -569,7 +569,7 @@ describe("Unit: In the libUtils library", function ()
                         1, 2, 3, "ewe",
                         [
                             {ff: 6, ee: [1, 2, 3, "ewe", "dfdf"], dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2, aa: 1}, {
-                            ff                                     : 6, ee: [1, 2, 3, "ewe", "dfdf"],
+                            ff                                     : 6, ee                              : [1, 2, 3, "ewe", "dfdf"],
                             dd: 4, cc: [1, 2, 3, "ewe", "dfdf"], bb: 2
                         }
                         ]
@@ -878,6 +878,79 @@ describe("Unit: In the libUtils library", function ()
                     "d": "[circular reference]"
                 }
             });
+        });
+
+        it("should return a a valid object when containing complex circular references", () =>
+        {
+            const obj1 = {
+                a: 1, b: 2, e: {
+                    f: {a: 1, b: 1, h: {
+                        i: 5, j: 6
+                        }}
+                },
+                aa: {
+                    bb: { cc: { dd: {ee: {ff: 1, gg: 2, hh: 3}}}}
+                }
+            };
+            const obj2 = {};
+            obj1.c1 = obj2;
+            obj1.c2 = obj2;
+            obj1.c3 = obj2;
+
+            obj1.aa0 = obj1;
+            obj1.aa1 = obj2;
+            obj1.aa2 = obj2;
+
+            obj1.e.f.ggg = obj2;
+            obj1.e.f.hhh = obj1;
+
+            obj1.ddd = obj1.e.f;
+
+            obj2.zzz = obj1;
+            // obj1.e.f.h.k = "aaa";
+            const obj = simplifyObject(obj1);
+            expect(obj).to.eql(
+
+                {
+                    "a": 1,
+                    "aa": {
+                        "bb": {
+                            "cc": {
+                                "dd": {
+                                    "ee": {
+                                        "ff": 1,
+                                        "gg": 2,
+                                        "hh": 3
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "aa0": "[circular reference]",
+                    "aa1": "[circular reference]",
+                    "aa2": "[circular reference]",
+                    "b": 2,
+                    "c1": "[circular reference]",
+                    "c2": "[circular reference]",
+                    "c3": "[circular reference]",
+                    "ddd": "[circular reference]",
+                    "e": {
+                        "f": {
+                            "a": 1,
+                            "b": 1,
+                            "ggg": {
+                                "zzz": "[circular reference]"
+                            },
+                            "h": {
+                                "i": 5,
+                                "j": 6
+                            },
+                            "hhh": "[circular reference]"
+                        }
+                    }
+                }
+
+            );
         });
 
     });
