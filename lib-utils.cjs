@@ -1575,7 +1575,7 @@ const isCircular = (obj) =>
  * @param mark
  * @returns {*}
  */
-const simplifyObject = (obj, {
+const simplifyObject0 = (obj, {
     copy = {},
     mark = `[circular reference]`,
     circularList = []
@@ -1638,11 +1638,17 @@ const simplifyObject = (obj, {
  * @param mark
  * @returns {string}
  */
-const stringifyObject = (obj, {depth = 0, circular = {}, maxDepth = 5, mark = "[circular reference]"} = {}) =>
+const stringifyObject = (obj, {circular = {}, mark = "[circular reference]"} = {}) =>
 {
-    const simplifiedObject = simplifyObject(obj, {depth, maxDepth, mark, circular});
+    const simplifiedObject = simplifyObject(obj, {mark, circular});
     return JSON.stringify(simplifiedObject);
 };
+
+const simplifyObject = (obj, {circular = {}, mark = "[circular reference]"} = {}) =>
+{
+    const str = stringifyObject(obj, {circular, mark})
+    return JSON.parse(str);
+}
 
 // Generic functions
 exports.convertArrayToObject = convertArrayToObject;
