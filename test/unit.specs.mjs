@@ -8,7 +8,8 @@ import chai  from "chai";
 import {
     areEquals, joinPath, normalisePath, getGlobalArguments, sleep, getLocalIp, getIps, convertToUrl, isObject,
     mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir,
-    importLowerCaseOptions, changeOptionsToLowerCase, addPlural, convertStringArgumentToArray, generateTempName
+    importLowerCaseOptions, changeOptionsToLowerCase, addPlural, convertStringArgumentToArray, generateTempName,
+    simplifyObject, stringifyObject
 }  from "../lib-utils.mjs";
 
 const expect = chai.expect;
@@ -841,6 +842,63 @@ describe("Unit: In the libUtils library", function ()
         {
             const localIp = getLocalIp();
             expect(localIp).to.match(/\d+\.\d+\.\d+\.\d+/);
+        });
+    });
+
+    describe("The function simplifyObject", () =>
+    {
+        it("should detect circular references", () =>
+        {
+            const obj1 = {};
+            const obj2 = {};
+            obj1.obj2 = obj2;
+            obj2.obj1 = obj1;
+            const obj = simplifyObject(obj1);
+            expect(obj).to.eql({
+                "obj2": {
+                    "obj1": "[circular reference]"
+                }
+            });
+        });
+
+        it("should return the same object when non-circular", () =>
+        {
+            const obj1 = {a: 1, b: 2};
+            const obj = simplifyObject(obj1);
+            expect(obj).to.eql({
+                "a": 1,
+                "b": 2
+            });
+        });
+
+        it("should return a a valid object when containing circular references", () =>
+        {
+            const obj1 = {a: 1, b: 2};
+            const obj2 = {};
+            obj1.c = obj2;
+            obj2.d = obj1;
+            const obj = simplifyObject(obj1);
+            expect(obj).to.eql({
+                "a": 1,
+                "b": 2,
+                "c": {
+                    "d": "[circular reference]"
+                }
+            });
+        });
+
+    });
+
+    describe("The function stringifyObject", () =>
+    {
+        it("should stringify an object with circular references", () =>
+        {
+            const obj1 = {a: 1, b: 2};
+            const obj2 = {};
+            obj1.c = obj2;
+            obj2.d = obj1;
+            const stringified = stringifyObject(obj1);
+            expect(stringified).to.equal(`{"a":1,"b":2,"c":{"d":"[circular reference]"}}`);
         });
     });
 
