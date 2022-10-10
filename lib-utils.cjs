@@ -1553,6 +1553,68 @@ const getLocalIp = () =>
     return list[0].address;
 };
 
+/**
+ * Remove circular references from an object
+ * @param obj
+ * @param depth
+ * @param circular
+ * @param maxDepth
+ * @param mark
+ * @returns {*}
+ */
+const simplifyObject = (obj, {depth = 0, circular = {}, maxDepth = 5, mark = "[circular reference]"} = {}) =>
+{
+    try
+    {
+        for (let key in  obj)
+        {
+            let val;
+            try
+            {
+                val = obj[key];
+                if (val === mark)
+                {
+                    continue;
+                }
+                JSON.stringify(val);
+            }
+            catch (e)
+            {
+                circular[key] = obj[key];
+                if (depth < maxDepth)
+                {
+                    circular[key] = simplifyObject(val, {depth: depth +1, circular});
+                }
+                else
+                {
+                    obj[key] = mark;
+                }
+            }
+        }
+    }
+    catch (e)
+    {
+        console.error({lid: 6141}, e.message);
+    }
+
+    return obj;
+};
+
+/**
+ * Stringify complex objects and inhibit circular references
+ * @param obj
+ * @param depth
+ * @param circular
+ * @param maxDepth
+ * @param mark
+ * @returns {string}
+ */
+const stringifyObject = (obj, {depth = 0, circular = {}, maxDepth = 5, mark = "[circular reference]"} = {}) =>
+{
+    const simplifiedObject = simplifyObject(obj, {depth, maxDepth, mark, circular});
+    return JSON.stringify(simplifiedObject);
+};
+
 // Generic functions
 exports.convertArrayToObject = convertArrayToObject;
 exports.convertStringArgumentToArray = convertStringArgumentToArray;
@@ -1569,6 +1631,8 @@ exports.areObjectsEquals = areObjectsEquals;
 exports.areEquals = areEquals;
 
 exports.replaceJsonContent = replaceJsonContent;
+exports.simplifyObject = simplifyObject;
+exports.stringifyObject = stringifyObject;
 
 // String related functions
 exports.generateTempName = generateTempName;
