@@ -286,12 +286,13 @@ const obj = simplifyObject(obj1);       // {a:1, b:2, c: {d: "[circular referenc
 ### Changelog
 
 ##### current:
-*  Add the function simplifyObject
+*  Do not mutate the object passed to simplifyObject
 
+##### 1.12.0:
+*  Add the function simplifyObject
 
 ##### 1.11.0:
 *  Add function convertStringArgumentToArray
-
 
 ##### 1.10.4:
 *  Make the function isItemInList() obsolete
