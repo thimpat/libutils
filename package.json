@@ -9,7 +9,7 @@
     "build:browser": "to-esm lib-utils.cjs --output dist/ --target browser --bundle-browser dist/lib-utils.min.mjs",
     "build:esm": "to-esm lib-utils.cjs --target esm --output ./ --update-all",
     "build:test": "to-esm test/unit.specs.cjs --output test/ --target esm && rimraf test/lib-utils.mjs && to-esm test/integration.specs.cjs --output ./ --target esm --skipEsmResolution",
-    "build:all": "npm run clean-dirs && npm run build:browser && npm run build:test"
+    "build:all": "npm run clean-dirs && npm run build:browser && npm run build:esm && npm run build:test"
   },
   "author": "Patrice Thimothee",
   "license": "MIT",
