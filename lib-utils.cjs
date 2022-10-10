@@ -1553,55 +1553,84 @@ const getLocalIp = () =>
     return list[0].address;
 };
 
-/**
- * Remove circular references from an object
- * @param obj
- * @param depth
- * @param circular
- * @param maxDepth
- * @param mark
- * @returns {*}
- */
-const simplifyObject = (obj, {depth = 0, circular = {}, maxDepth = 5, mark = "[circular reference]"} = {}) =>
+const isCircular = (obj) =>
 {
     try
     {
-        for (let key in  obj)
+        JSON.stringify(obj);
+        return false;
+    }
+    catch (e)
+    {
+    }
+
+    return true;
+};
+
+/**
+ * Remove circular references from an object
+ * @param obj
+ * @param copy
+ * @param parent
+ * @param mark
+ * @returns {*}
+ */
+const simplifyObject = (obj, {
+    copy = {},
+    mark = `[circular reference]`,
+    circularList = []
+} = {}) =>
+{
+    try
+    {
+        if (!isCircular(obj))
+        {
+            return obj;
+        }
+        circularList.push(obj);
+
+        for (let prop in obj)
         {
             let val;
             try
             {
-                val = obj[key];
-                if (val === mark)
+                val = obj[prop];
+
+                if (!isCircular(val))
                 {
+                    copy[prop] = val;
                     continue;
                 }
-                JSON.stringify(val);
+
+                if (circularList.includes(val))
+                {
+                    copy[prop] = mark;
+                    continue;
+                }
+
+                copy[prop] = simplifyObject(val, {
+                    copy  : {},
+                    circularList: circularList
+                });
+
             }
             catch (e)
             {
-                circular[key] = obj[key];
-                if (depth < maxDepth)
-                {
-                    circular[key] = simplifyObject(val, {depth: depth +1, circular});
-                }
-                else
-                {
-                    obj[key] = mark;
-                }
             }
         }
+
     }
     catch (e)
     {
         console.error({lid: 6141}, e.message);
     }
 
-    return obj;
+    return copy;
 };
 
 /**
  * Stringify complex objects and inhibit circular references
+ * @note NEED REVIEW
  * @param obj
  * @param depth
  * @param circular
