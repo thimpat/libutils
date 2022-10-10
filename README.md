@@ -205,6 +205,8 @@ calculateCommon(["/a/b/c/d", "/a/b/c/d/e", "/a/b/c/d/e/g/h/i"]);        // => "/
 
 #### getPackageJson
 
+> NEEDS REVIEW. NOT PRODUCTION READY.
+
 Returns package.json content
 
 ```javascript
@@ -238,6 +240,23 @@ const packageJson = getPackageJson({root: false})           // Content of /home/
 
 ```javascript
 getLocalIp()      // 192.168.1.4
+```
+
+<br/>
+
+---
+
+#### simplifyObject
+
+###### Remove circular references from an object
+
+```javascript
+const obj1 = {a: 1, b: 2};
+const obj2 = {};
+obj1.c = obj2;
+obj2.d = obj1;
+
+const obj = simplifyObject(obj1);       // {a:1, b:2, c: {d: "[circular reference]" }}
 ```
 
 <br/>
