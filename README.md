@@ -286,6 +286,10 @@ const obj = simplifyObject(obj1);       // {a:1, b:2, c: {d: "[circular referenc
 ### Changelog
 
 ##### current:
+*  Add the function simplifyObject
+
+
+##### 1.11.0:
 *  Add function convertStringArgumentToArray
 
 
