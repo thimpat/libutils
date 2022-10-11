@@ -1575,7 +1575,7 @@ const isCircular = (obj) =>
  * @param mark
  * @returns {*}
  */
-const simplifyObject0 = (obj, {
+const _simplifyObject = (obj, {
     copy = {},
     mark = `[circular reference]`,
     circularList = []
@@ -1608,7 +1608,7 @@ const simplifyObject0 = (obj, {
                     continue;
                 }
 
-                copy[prop] = simplifyObject(val, {
+                copy[prop] = _simplifyObject(val, {
                     copy  : {},
                     circularList: circularList
                 });
@@ -1640,15 +1640,16 @@ const simplifyObject0 = (obj, {
  */
 const stringifyObject = (obj, {circular = {}, mark = "[circular reference]"} = {}) =>
 {
-    const simplifiedObject = simplifyObject(obj, {mark, circular});
+    const simplifiedObject = _simplifyObject(obj, {mark, circular});
     return JSON.stringify(simplifiedObject);
 };
 
 const simplifyObject = (obj, {circular = {}, mark = "[circular reference]"} = {}) =>
 {
-    const str = stringifyObject(obj, {circular, mark})
+    const newObj = _simplifyObject(obj, {circular, mark});
+    const str = JSON.stringify(newObj);
     return JSON.parse(str);
-}
+};
 
 // Generic functions
 exports.convertArrayToObject = convertArrayToObject;
@@ -1666,6 +1667,7 @@ exports.areObjectsEquals = areObjectsEquals;
 exports.areEquals = areEquals;
 
 exports.replaceJsonContent = replaceJsonContent;
+exports._simplifyObject = _simplifyObject;
 exports.simplifyObject = simplifyObject;
 exports.stringifyObject = stringifyObject;
 
