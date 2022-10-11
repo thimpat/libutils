@@ -286,6 +286,11 @@ const obj = simplifyObject(obj1);       // {a:1, b:2, c: {d: "[circular referenc
 ### Changelog
 
 ##### current:
+*  Fix simplifyObject misnaming
+
+
+##### 1.12.1:
+*  Make simplifyObject immutable (bug)
 *  Do not mutate the object passed to simplifyObject
 
 ##### 1.12.0:
