@@ -5,7 +5,7 @@ const {
     areEquals, joinPath, normalisePath, getGlobalArguments, sleep, getLocalIp, getIps, convertToUrl, isObject,
     mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir,
     importLowerCaseOptions, changeOptionsToLowerCase, addPlural, convertStringArgumentToArray, generateTempName,
-    simplifyObject, stringifyObject
+    simplifyObject, stringifyObject,
 } = require("../lib-utils.cjs");
 
 describe("Unit: In the libUtils library", function ()
