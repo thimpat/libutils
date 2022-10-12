@@ -5,7 +5,7 @@ const {
     areEquals, joinPath, normalisePath, getGlobalArguments, sleep, getLocalIp, getIps, convertToUrl, isObject,
     mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir,
     importLowerCaseOptions, changeOptionsToLowerCase, addPlural, convertStringArgumentToArray, generateTempName,
-    simplifyObject, stringifyObject,
+    simplifyObject, stringifyObject, isJson,
 } = require("../lib-utils.cjs");
 
 describe("Unit: In the libUtils library", function ()
@@ -965,6 +965,23 @@ describe("Unit: In the libUtils library", function ()
             obj2.d = obj1;
             const stringified = stringifyObject(obj1);
             expect(stringified).to.equal(`{"a":1,"b":2,"c":{"d":"[circular reference]"}}`);
+        });
+    });
+
+    describe("The function isJson", () =>
+    {
+        it("should return true if a string is of Json type", () =>
+        {
+            const str = JSON.stringify({"aa": 1});
+            const b = isJson(str);
+            expect(b).to.be.true;
+        });
+
+        it("should return false if a string is not of Json type", () =>
+        {
+            const str = "{56454}";
+            const b = isJson(str);
+            expect(b).to.be.false;
         });
     });
 
