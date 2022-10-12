@@ -1571,8 +1571,8 @@ const isCircular = (obj) =>
  * Remove circular references from an object
  * @param obj
  * @param copy
- * @param parent
  * @param mark
+ * @param circularList
  * @returns {*}
  */
 const _simplifyObject = (obj, {
@@ -1630,11 +1630,8 @@ const _simplifyObject = (obj, {
 
 /**
  * Stringify complex objects and inhibit circular references
- * @note NEED REVIEW
  * @param obj
- * @param depth
  * @param circular
- * @param maxDepth
  * @param mark
  * @returns {string}
  */
@@ -1650,6 +1647,26 @@ const simplifyObject = (obj, {circular = {}, mark = "[circular reference]"} = {}
     const str = JSON.stringify(newObj);
     return JSON.parse(str);
 };
+
+/**
+ * Whether a string has a json structure
+ * @todo NEED BENCHMARK
+ * @param str
+ * @returns {boolean}
+ */
+const isJson = (str) =>
+{
+    try
+    {
+        return !!JSON.parse(str);
+    }
+    catch (e)
+    {
+
+    }
+    return false;
+};
+
 
 // Generic functions
 exports.convertArrayToObject = convertArrayToObject;
@@ -1676,6 +1693,7 @@ exports.generateTempName = generateTempName;
 exports.getCommon = getCommon;
 exports.getCommonDir = getCommonDir;
 exports.addPlural = addPlural;
+exports.isJson = isJson;
 
 // URL related functions
 exports.convertToUrl = convertToUrl;
