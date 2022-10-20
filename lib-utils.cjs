@@ -892,6 +892,20 @@ const calculateCommon = (files) =>
 // ==================================================================
 // User Related functions
 // ==================================================================
+const getDataDir = () =>
+{
+    try
+    {
+        const osDataDir = process.env.APPDATA || (process.platform === "darwin" ? process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.local/share");
+        return resolvePath(osDataDir);
+    }
+    catch (e)
+    {
+
+    }
+    return null;
+};
+
 /**
  * Returns OS data dir for the application
  * @returns {string|null}
@@ -900,7 +914,7 @@ const getAppDataDir = (appName) =>
 {
     try
     {
-        const osDataDir = process.env.APPDATA || (process.platform === "darwin" ? process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.local/share");
+        const osDataDir = getDataDir();
         return joinPath(osDataDir, appName);
     }
     catch (e)
@@ -1609,7 +1623,7 @@ const _simplifyObject = (obj, {
                 }
 
                 copy[prop] = _simplifyObject(val, {
-                    copy  : {},
+                    copy        : {},
                     circularList: circularList
                 });
 
@@ -1718,6 +1732,7 @@ exports.changeOptionsToLowerCase = changeOptionsToLowerCase;
 
 // Path Related functions
 exports.isArgsDir = isArgsDir;
+exports.getDataDir = getDataDir;
 exports.getAppDataDir = getAppDataDir;
 exports.createAppDataDir = createAppDataDir;
 exports.isConventionalFolder = isConventionalFolder;
