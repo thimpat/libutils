@@ -11,7 +11,7 @@ const {execSync} = require("child_process");
 /** to-esm-browser: end-remove **/
 
 // ==================================================================
-// Browser incompatibles units
+// Obsolete
 // ==================================================================
 /**
  * @obsolete
@@ -29,6 +29,183 @@ const isItemInList = () =>
 {
     throw new Error(`Obsolete function: Available in version 1.10.3`);
 };
+
+// ==================================================================
+// Browser incompatibles units
+// ==================================================================
+/** to-esm-browser: remove **/
+/**
+ * Transform a given path following some conventions.
+ * @param somePath
+ * @param filepath
+ * @param isFolder
+ * @returns {string}
+ *
+ * CONVENTIONS:
+ * - All folders must finish with a "/"
+ * - Paths must be made of forward slashes (no backward slash)
+ */
+const normalisePath = (filepath, {
+    isFolder = false,
+    isForceLinuxFormat = false,
+    isForceRelative = true,
+    uncRoot = ""
+} = {}) =>
+{
+    let somePath = filepath;
+    try
+    {
+        if (somePath === undefined || somePath === null)
+        {
+            return somePath;
+        }
+
+        somePath = somePath.trim();
+        if (!somePath || somePath === ".")
+        {
+            return "./";
+        }
+
+        if (isFolder === undefined)
+        {
+            isFolder = isArgsDir(filepath);
+        }
+
+        somePath = path.normalize(somePath);
+        somePath = somePath.replace(/\\/gm, "/");
+
+        if (isFolder)
+        {
+            if (!isConventionalFolder(somePath))
+            {
+                somePath = somePath + "/";
+            }
+        }
+
+        if (path.isAbsolute(somePath))
+        {
+            if (isForceLinuxFormat)
+            {
+                const arr = somePath.split(":/");
+                if (arr.length > 1)
+                {
+                    arr[0] = uncRoot || arr[0];
+                    somePath = arr.join("/");
+                }
+            }
+
+            return somePath;
+        }
+
+        const firstChar = somePath.charAt(0);
+        if (isForceRelative)
+        {
+            if (!(firstChar === "." || firstChar === "/"))
+            {
+                somePath = "./" + somePath;
+            }
+        }
+
+    }
+    catch (e)
+    {
+        console.error(`Could not normalize path [${filepath}]: ${e.message}`);
+    }
+
+    return somePath;
+};
+
+const normaliseDirPath = (filepath, {
+    isForceLinuxFormat = false,
+    isForceRelative = true,
+    uncRoot = ""
+} = {}) =>
+{
+    return normalisePath(filepath, {
+        isFolder: true,
+        isForceLinuxFormat,
+        isForceRelative,
+        uncRoot
+    });
+};
+
+/**
+ * Join and optimise path
+ * @alias path.join
+ * @param args
+ * @returns {any}
+ */
+const joinPath = (...args) =>
+{
+    const isFolder = isArgsDir(...args);
+    let filepath = path.join(...args);
+    filepath = normalisePath(filepath, {isFolder});
+    return filepath;
+};
+
+/**
+ * Resolve and optimise path (replace backslashes with forward slashes)
+ * @alias path.resolve
+ * @param filepath
+ * @returns {*}
+ */
+const resolvePath = (filepath) =>
+{
+    const isFolder = isArgsDir(filepath);
+    filepath = path.resolve(filepath);
+    filepath = normalisePath(filepath, {isFolder});
+    return filepath;
+};
+
+const getRelativePath = (path1, path2) =>
+{
+    const relativePath = path.relative(path1, path2);
+    return normalisePath(relativePath);
+};
+
+/**
+ * Use conventions (See file top)
+ * @todo Change function name to more appropriate name
+ * @param source
+ * @param requiredPath
+ * @returns {string}
+ */
+const calculateRelativePath = (source, requiredPath) =>
+{
+    source = normalisePath(source);
+    requiredPath = normalisePath(requiredPath);
+
+    if (!isConventionalFolder(source))
+    {
+        source = path.parse(source).dir + "/";
+    }
+
+    return getRelativePath(source, requiredPath);
+};
+
+const getFilepathCopyName = (filepath, {extension = "bak"} = {}) =>
+{
+    const parsed = path.parse(filepath);
+    const dir = parsed.dir;
+    let filename = parsed.name;
+    const filepathBak = path.join(dir, filename + `.${extension}`);
+    if (!fs.existsSync(filepathBak))
+    {
+        return filepathBak;
+    }
+
+    for (let i = 0; ; ++i)
+    {
+        const filepathBak = path.join(dir, filename + `.${extension}.${i}`);
+        if (!fs.existsSync(filepathBak))
+        {
+            return filepathBak;
+        }
+    }
+
+    throw Error(`Could not determine file temp name`);
+};
+/** to-esm-browser: end-remove **/
 
 // ==================================================================
 // Constants
@@ -315,101 +492,6 @@ const convertSessionToArg = (session, argv, {scriptPath = "", command = "", targ
     return argumentsFromSession;
 };
 
-/**
- * Transform a given path following some conventions.
- * @param somePath
- * @param filepath
- * @param isFolder
- * @returns {string}
- *
- * CONVENTIONS:
- * - All folders must finish with a "/"
- * - Paths must be made of forward slashes (no backward slash)
- */
-const normalisePath = (filepath, {
-    isFolder = false,
-    isForceLinuxFormat = false,
-    isForceRelative = true,
-    uncRoot = ""
-} = {}) =>
-{
-    let somePath = filepath;
-    try
-    {
-        if (somePath === undefined || somePath === null)
-        {
-            return somePath;
-        }
-
-        somePath = somePath.trim();
-        if (!somePath || somePath === ".")
-        {
-            return "./";
-        }
-
-        if (isFolder === undefined)
-        {
-            isFolder = isArgsDir(filepath);
-        }
-
-        somePath = path.normalize(somePath);
-        somePath = somePath.replace(/\\/gm, "/");
-
-        if (isFolder)
-        {
-            if (!isConventionalFolder(somePath))
-            {
-                somePath = somePath + "/";
-            }
-        }
-
-        if (path.isAbsolute(somePath))
-        {
-            if (isForceLinuxFormat)
-            {
-                const arr = somePath.split(":/");
-                if (arr.length > 1)
-                {
-                    arr[0] = uncRoot || arr[0];
-                    somePath = arr.join("/");
-                }
-            }
-
-            return somePath;
-        }
-
-        const firstChar = somePath.charAt(0);
-        if (isForceRelative)
-        {
-            if (!(firstChar === "." || firstChar === "/"))
-            {
-                somePath = "./" + somePath;
-            }
-        }
-
-    }
-    catch (e)
-    {
-        console.error(`Could not normalize path [${filepath}]: ${e.message}`);
-    }
-
-    return somePath;
-};
-
-const normaliseDirPath = (filepath, {
-    isForceLinuxFormat = false,
-    isForceRelative = true,
-    uncRoot = ""
-} = {}) =>
-{
-    return normalisePath(filepath, {
-        isFolder: true,
-        isForceLinuxFormat,
-        isForceRelative,
-        uncRoot
-    });
-};
-
 const normaliseFileName = (filename) =>
 {
     try
@@ -501,34 +583,6 @@ const isArgsDir = (...args) =>
             " containing this error if possible => " + e.message);
     }
     return false;
-};
-
-/**
- * Join and optimise path
- * @alias path.join
- * @param args
- * @returns {any}
- */
-const joinPath = (...args) =>
-{
-    const isFolder = isArgsDir(...args);
-    let filepath = path.join(...args);
-    filepath = normalisePath(filepath, {isFolder});
-    return filepath;
-};
-
-/**
- * Resolve and optimise path (replace backslashes with forward slashes)
- * @alias path.resolve
- * @param filepath
- * @returns {*}
- */
-const resolvePath = (filepath) =>
-{
-    const isFolder = isArgsDir(filepath);
-    filepath = path.resolve(filepath);
-    filepath = normalisePath(filepath, {isFolder});
-    return filepath;
 };
 
 /**
@@ -625,27 +679,6 @@ const isConventionalFolder = (source) =>
         return false;
     }
     return source.charAt(source.length - 1) === "/";
-};
-
-/**
- * Use conventions (See file top)
- * @todo Change function name to more appropriate name
- * @param source
- * @param requiredPath
- * @returns {string}
- */
-const calculateRelativePath = (source, requiredPath) =>
-{
-    source = normalisePath(source);
-    requiredPath = normalisePath(requiredPath);
-
-    if (!isConventionalFolder(source))
-    {
-        source = path.parse(source).dir + "/";
-    }
-
-    const relativePath = path.relative(source, requiredPath);
-    return normalisePath(relativePath);
 };
 
 /**
@@ -1179,29 +1212,6 @@ const areEquals = (entity1, entity2) =>
     const str1 = JSON.stringify(sorted1);
     const str2 = JSON.stringify(sortEntryByKey(sorted2));
     return str1 === str2;
-};
-
-const getFilepathCopyName = (filepath, {extension = "bak"} = {}) =>
-{
-    const parsed = path.parse(filepath);
-    const dir = parsed.dir;
-    let filename = parsed.name;
-    const filepathBak = path.join(dir, filename + `.${extension}`);
-    if (!fs.existsSync(filepathBak))
-    {
-        return filepathBak;
-    }
-
-    for (let i = 0; ; ++i)
-    {
-        const filepathBak = path.join(dir, filename + `.${extension}.${i}`);
-        if (!fs.existsSync(filepathBak))
-        {
-            return filepathBak;
-        }
-    }
-
-    throw Error(`Could not determine file temp name`);
 };
 
 /**
@@ -1743,6 +1753,7 @@ exports.normaliseDirPath = normaliseDirPath;
 exports.calculateRelativePath = calculateRelativePath;
 exports.calculateCommon = calculateCommon;
 exports.normaliseRealPath = normaliseRealPath;
+exports.getRelativePath = getRelativePath;
 
 // Package related functions
 exports.isPackageInstalled = isPackageInstalled;
