@@ -5,7 +5,7 @@ const {
     areEquals, joinPath, normalisePath, getGlobalArguments, sleep, getLocalIp, getIps, convertToUrl, isObject,
     mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir,
     importLowerCaseOptions, changeOptionsToLowerCase, addPlural, convertStringArgumentToArray, generateTempName,
-    simplifyObject, stringifyObject, isJson,
+    simplifyObject, stringifyObject, isJson, getIpList,
 } = require("../lib-utils.cjs");
 
 describe("Unit: In the libUtils library", function ()
@@ -826,6 +826,15 @@ describe("Unit: In the libUtils library", function ()
         {
             const ips = getIps();
             expect(Object.keys(ips).length).to.be.greaterThan(0);
+        });
+    });
+
+    describe("The function getIpList", () =>
+    {
+        it("should return a list of ips", async () =>
+        {
+            const ips = getIpList();
+            expect(ips.length).to.be.greaterThan(0);
         });
     });
 
