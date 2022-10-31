@@ -1448,7 +1448,6 @@ const getIps = ({allInfo = false} = {}) =>
 
                     if (allInfo)
                     {
-
                         arr.push(Object.assign({name}, net));
                     }
                     else
@@ -1472,6 +1471,24 @@ const getIps = ({allInfo = false} = {}) =>
     }
 
     return null;
+};
+
+/**
+ * Return ips only
+ */
+const getIpList = () =>
+{
+    let ipList = [];
+    const detectedIps = getIps();
+    const list = Object.values(detectedIps);
+    for (let i = 0; i < list.length; ++i)
+    {
+        const ips = list[i] || [];
+        ipList.push(...ips);
+    }
+
+    ipList = [...new Set(ipList)];
+    return ipList;
 };
 
 const getIpInfoList = () =>
@@ -1763,6 +1780,7 @@ exports.getPackageJson = getPackageJson;
 
 // Network related functions
 exports.getIps = getIps;
+exports.getIpList = getIpList;
 exports.getIpInfoList = getIpInfoList;
 exports.getLocalIp = getLocalIp;
 
