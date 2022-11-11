@@ -285,7 +285,11 @@ const obj = simplifyObject(obj1);       // {a:1, b:2, c: {d: "[circular referenc
 
 ### Changelog
 
-##### current:
+##### 1.13.4:
+*  Allow symlinks in normaliseRealPathV2
+
+
+##### 1.12.2:
 *  Fix simplifyObject misnaming
 
 
