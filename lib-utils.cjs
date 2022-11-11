@@ -513,9 +513,10 @@ const normaliseFileName = (filename) =>
 /**
  * Normalise existing filepath
  * @param filepath
- * @returns {string|null}
+ * @param ignoreSymLink
+ * @returns {{[filepath]: string, success: boolean, error: Error}}
  */
-const normaliseRealPath = (filepath) =>
+const normaliseRealPath = (filepath, {ignoreSymLink = true} = {}) =>
 {
     try
     {
@@ -527,11 +528,28 @@ const normaliseRealPath = (filepath) =>
             };
         }
 
-        const lstats = fs.lstatSync(filepath);
+        let lstats = fs.lstatSync(filepath);
+
+        if (lstats.isSymbolicLink())
+        {
+            if (ignoreSymLink )
+            {
+                return {
+                    success: false,
+                    error  : new Error(`The source file "${filepath}" is a symbolic link. Use normaliseRealPathV2 to take them into account`)
+                };
+            }
+            else
+            {
+                filepath = fs.realpathSync(filepath);
+                lstats = fs.lstatSync(filepath);
+            }
+        }
 
         if (lstats.isFile())
         {
             return {
+                error: null,
                 success : true,
                 filepath: normalisePath(filepath, {isFolder: false})
             };
@@ -539,6 +557,7 @@ const normaliseRealPath = (filepath) =>
         else if (lstats.isDirectory())
         {
             return {
+                error: null,
                 success : true,
                 filepath: normalisePath(filepath, {isFolder: true})
             };
@@ -546,7 +565,7 @@ const normaliseRealPath = (filepath) =>
 
         return {
             success: false,
-            error  : new Error(`This method only handles files and folders ${filepath}`)
+            error  : new Error(`This method only handles files, folders and symlinks [${filepath}]`)
         };
     }
     catch (e)
@@ -556,6 +575,16 @@ const normaliseRealPath = (filepath) =>
             error  : e
         };
     }
+};
+
+/**
+ * Normalise existing filepath with symlinks included
+ * @param filepath
+ * @returns {{[filepath]: string, success: boolean, error: Error}}
+ */
+const normaliseRealPathV2 = (filepath) =>
+{
+    return normaliseRealPath(filepath, {ignoreSymLink: false});
 };
 
 const isArgsDir = (...args) =>
@@ -1562,6 +1591,8 @@ const getIpInfoList = () =>
                 priorities += 5;
             }
 
+            // TODO: Add does not end with a .1 => priority +1
+
             if (cidr[1] >= 24)
             {
                 priorities += 2;
@@ -1770,6 +1801,7 @@ exports.normaliseDirPath = normaliseDirPath;
 exports.calculateRelativePath = calculateRelativePath;
 exports.calculateCommon = calculateCommon;
 exports.normaliseRealPath = normaliseRealPath;
+exports.normaliseRealPathV2 = normaliseRealPathV2;
 exports.getRelativePath = getRelativePath;
 
 // Package related functions
