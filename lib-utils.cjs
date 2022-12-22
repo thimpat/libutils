@@ -510,6 +510,7 @@ const normaliseFileName = (filename) =>
     }
 };
 
+/** to-esm-browser: remove **/
 /**
  * Normalise existing filepath
  * @param filepath
@@ -586,6 +587,7 @@ const normaliseRealPathV2 = (filepath) =>
 {
     return normaliseRealPath(filepath, {ignoreSymLink: false});
 };
+/** to-esm-browser: end-remove **/
 
 const isArgsDir = (...args) =>
 {
@@ -614,6 +616,7 @@ const isArgsDir = (...args) =>
     return false;
 };
 
+/** to-esm-browser: remove **/
 /**
  * Calculate file size
  * @param file
@@ -624,6 +627,7 @@ const getFilesizeInBytes = (file) =>
     const stats = fs.statSync(file);
     return stats.size;
 };
+/** to-esm-browser: end-remove **/
 
 /**
  * Get file text content
@@ -1453,6 +1457,7 @@ const getPackageJson = ({projectName = "", root = false, startDir = undefined} =
     return null;
 };
 
+/** to-esm-browser: remove **/
 /**
  * @link https://stackoverflow.com/questions/3653065/get-local-ip-address-in-node-js
  * @returns {{}|[]|null}
@@ -1624,6 +1629,7 @@ const getLocalIp = () =>
     const list = getIpInfoList();
     return list[0].address;
 };
+/** to-esm-browser: end-remove **/
 
 const isCircular = (obj) =>
 {
@@ -1772,13 +1778,16 @@ exports.convertToUrl = convertToUrl;
 exports.fetchSync = fetchSync;
 
 // File related functions
+/** to-esm-browser: remove **/
 exports.getFilesizeInBytes = getFilesizeInBytes;
 exports.getFileContent = getFileContent;
 exports.writeFileContent = writeFileContent;
+exports.getFilepathCopyName = getFilepathCopyName;
+/** to-esm-browser: end-remove **/
+
 exports.loadJsonFile = loadJsonFile;
 exports.saveJsonFile = saveJsonFile;
 exports.normaliseFileName = normaliseFileName;
-exports.getFilepathCopyName = getFilepathCopyName;
 
 // Profiling Related functions
 exports.getCallInfo = getCallInfo;
@@ -1794,15 +1803,18 @@ exports.getDataDir = getDataDir;
 exports.getAppDataDir = getAppDataDir;
 exports.createAppDataDir = createAppDataDir;
 exports.isConventionalFolder = isConventionalFolder;
+
+/** to-esm-browser: remove **/
 exports.resolvePath = resolvePath;
 exports.joinPath = joinPath;
 exports.normalisePath = normalisePath;
 exports.normaliseDirPath = normaliseDirPath;
 exports.calculateRelativePath = calculateRelativePath;
-exports.calculateCommon = calculateCommon;
 exports.normaliseRealPath = normaliseRealPath;
 exports.normaliseRealPathV2 = normaliseRealPathV2;
 exports.getRelativePath = getRelativePath;
+/** to-esm-browser: end-remove **/
+exports.calculateCommon = calculateCommon;
 
 // Package related functions
 exports.isPackageInstalled = isPackageInstalled;
@@ -1811,10 +1823,12 @@ exports.findProjectDir = findProjectDir;
 exports.getPackageJson = getPackageJson;
 
 // Network related functions
+/** to-esm-browser: remove **/
 exports.getIps = getIps;
 exports.getIpList = getIpList;
 exports.getIpInfoList = getIpInfoList;
 exports.getLocalIp = getLocalIp;
+/** to-esm-browser: end-remove **/
 
 // Obsolete
 exports.getGlobalArguments = getGlobalArguments;
