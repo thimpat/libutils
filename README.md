@@ -286,6 +286,10 @@ const obj = simplifyObject(obj1);       // {a:1, b:2, c: {d: "[circular referenc
 ### Changelog
 
 ##### current:
+*  Fix areEquals changing the content type for arrays of objects
+
+
+##### 1.13.5:
 *  Remove incompatible functions from browser library
 
 
