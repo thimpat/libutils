@@ -478,6 +478,133 @@ describe("Unit: In the libUtils library", function ()
         });
 
         // ----------------------
+        // Array of objects
+        // ----------------------
+        it("should not modify the structure", function ()
+        {
+            const obj1 = {
+                "users": {
+                    "admin": {
+                        "password": "hgfhff"
+                    }
+                },
+                "earnings": [
+                    "\\?p=(.*)"
+                ],
+                "ignore": [
+                    "automator.tests"
+                ],
+                "modulename": "web-analyst@latest",
+                "name": "web-analyst",
+                "pages": [
+                    ".*\\.html\\b",
+                    "\\/$"
+                ],
+                "token": "fhfghgf"
+            };
+            const obj2 = {
+                "description": "Link to the web-analyst folder at C:/projects/web-analyst",
+                "users": {
+                    "admin": {
+                        "password": "admin"
+                    }
+                },
+                "earnings": [
+                    "\\?p=(.*)"
+                ],
+                "ignore": [
+                    "automator.tests"
+                ],
+                "modulelink": "C:/projects/web-analyst",
+                "name": "web-analyst",
+                "pages": [
+                    ".*\\.html\\b",
+                    "\\/$"
+                ],
+                "token": "dfgdffgd"
+            };
+
+            const clone = Object.assign({}, obj1);
+            areEquals(obj1, obj2);
+
+            const equals = areEquals(obj1, clone);
+            expect(equals).be.true;
+        });
+
+        it("should be true when both arguments are the same", function ()
+        {
+            const obj1 = {
+                "users": {
+                    "admin": {
+                        "password": "hgfhff"
+                    }
+                },
+                "earnings": [
+                    "\\?p=(.*)"
+                ],
+                "ignore": [
+                    "automator.tests"
+                ],
+                "modulename": "web-analyst@latest",
+                "name": "web-analyst",
+                "pages": [
+                    ".*\\.html\\b",
+                    "\\/$"
+                ],
+                "token": "fhfghgf"
+            };
+            const equals = areEquals(obj1, obj1);
+            expect(equals).to.be.true;
+        });
+
+        it("should be false when the array of objects are different", function ()
+        {
+            const obj1 = {
+                "users": {
+                    "admin": {
+                        "password": "hgfhff"
+                    }
+                },
+                "earnings": [
+                    "\\?p=(.*)"
+                ],
+                "ignore": [
+                    "jjhjhm,b,"
+                ],
+                "modulename": ",..,,.,.",
+                "name": "yttyyut",
+                "pages": [
+                    ".*\\.html\\b",
+                    "\\/$"
+                ],
+                "token": "fhfghgf"
+            };
+            const obj2 = {
+                "description": "bbmhmhgmgh",
+                "users": {
+                    "admin": {
+                        "password": "fdfdfdd"
+                    }
+                },
+                "earnings": [
+                    "\\?p=(.*)"
+                ],
+                "ignore": [
+                    "kiijuojlkljjk"
+                ],
+                "modulelink": "assaaasasf",
+                "name": "hgjgfhffghf",
+                "pages": [
+                    ".*\\.html\\b",
+                    "\\/$"
+                ],
+                "token": "dfgdffgd"
+            };
+            const equals = areEquals(obj1, obj2);
+            expect(equals).to.be.false;
+        });
+
+        // ----------------------
         // Complex nested
         // ----------------------
         it("should be true when arguments are the same two complex nested object with depth === 1", function ()
