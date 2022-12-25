@@ -1177,14 +1177,13 @@ let sortEntryByKey = (currentEntity) =>
     }
     else if (currentEntity instanceof Object)
     {
-        currentEntity = Object.entries(currentEntity).sort().map(entry =>
-        {
-            if (entry[1] instanceof Object)
-            {
-                entry[1] = sortEntryByKey(entry[1]);
-            }
-            return entry;
-        });
+        currentEntity = Object.keys({...currentEntity}).sort().reduce(
+            (obj, key) => {
+                obj[key] = currentEntity[key];
+                return obj;
+            },
+            {}
+        );
 
         return currentEntity;
     }
@@ -1266,7 +1265,7 @@ const replaceJsonContent = (json, targetPath) =>
         if (fs.existsSync(targetPath))
         {
             // Read its content
-            const previous = fs.readFileSync(targetPath, "utf-8");
+            const previous = fs.readFileSync(targetPath, {encoding: "utf-8"});
             const json = JSON.parse(previous);
 
             // Compare with the given value
