@@ -1,6 +1,6 @@
 {
   "name": "@thimpat/libutils",
-  "version": "1.13.5",
+  "version": "1.13.6",
   "description": "Helper functions",
   "main": "./lib-utils.cjs",
   "scripts": {
