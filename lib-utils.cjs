@@ -243,10 +243,14 @@ function convertArrayToObject(array, defaultValue = undefined)
     return object;
 }
 
+/**
+ * Sanitize a string before pushing it to an array
+ * @param args
+ * @param str
+ */
 function pushArg(args, str)
 {
     str = str.trim();
-
     if (!str)
     {
         return;
@@ -255,6 +259,51 @@ function pushArg(args, str)
     args.push(str);
 }
 
+/**
+ *
+ * @example
+ * 📋 ◀ convertStringArgumentToArray("c1,c2,c3")
+ * 💻 ▶ ["c1", "c2", "c3"]
+ * @param arr
+ * @returns {*|boolean}
+ */
+const convertSingleCommandLineArgumentToArray = function (arr)
+{
+    try
+    {
+        if (Array.isArray(arr))
+        {
+            return arr;
+        }
+
+        arr = arr.trim();
+        if (arr.startsWith("[") && arr.endsWith("]"))
+        {
+            arr = arr.substring(1, arr.length - 1);
+            arr = arr.trim();
+        }
+
+        arr = arr.split(",");
+
+        return arr;
+    }
+    catch (e)
+    {
+        console.error({lid: 3215}, e.message);
+    }
+
+    return [];
+};
+
+/**
+ * Convert a string into an argument list
+ * @example
+ * 📋 ◀ convertStringArgumentToArray("'/Users/me/Chrome SxS/Application/chrome.exe' --my-errors --aa=true");
+ * ---
+ * 💻 ▶ ["/Users/me/Chrome SxS/Application/chrome.exe", "--my-errors", "--aa=true"]
+ * @param str
+ * @returns {*[]}
+ */
 function convertStringArgumentToArray(str)
 {
     const symbols = [`"`, "'", "`"];
@@ -1748,6 +1797,7 @@ const isJson = (str) =>
 // Generic functions
 exports.convertArrayToObject = convertArrayToObject;
 exports.convertStringArgumentToArray = convertStringArgumentToArray;
+exports.convertSingleCommandLineArgumentToArray = convertSingleCommandLineArgumentToArray;
 
 exports.mergeDeep = mergeDeep;
 exports.sleep = sleep;
