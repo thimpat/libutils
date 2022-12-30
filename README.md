@@ -269,7 +269,7 @@ const obj = simplifyObject(obj1);       // {a:1, b:2, c: {d: "[circular referenc
 📁 package                
 │
 └───📝 lib-utils.cjs             ⇽ CJS version      - Node (43.1k unminified)
-└───📝 lib-utils.mjs             ⇽ ESM version      - Node (42.4k unminified)
+└───📝 lib-utils.mjs             ⇽ ESM version      - Node (42.7k unminified)
 │
 └───📁 dist
 │   │
