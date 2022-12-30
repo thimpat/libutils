@@ -304,7 +304,7 @@ const convertSingleCommandLineArgumentToArray = function (arr)
  * @param str
  * @returns {*[]}
  */
-function convertStringArgumentToArray(str)
+function convertCommandLineToArray(str)
 {
     const symbols = [`"`, "'", "`"];
     const separators = [" "];
@@ -349,6 +349,11 @@ function convertStringArgumentToArray(str)
     pushArg(args, str.substring(indexStart));
 
     return args;
+}
+
+function convertStringArgumentToArray(...arg)
+{
+    return convertCommandLineToArray(...arg);
 }
 
 /**
@@ -1796,6 +1801,7 @@ const isJson = (str) =>
 
 // Generic functions
 exports.convertArrayToObject = convertArrayToObject;
+exports.convertCommandLineToArray = convertCommandLineToArray;
 exports.convertStringArgumentToArray = convertStringArgumentToArray;
 exports.convertSingleCommandLineArgumentToArray = convertSingleCommandLineArgumentToArray;
 
