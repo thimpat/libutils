@@ -286,6 +286,10 @@ const obj = simplifyObject(obj1);       // {a:1, b:2, c: {d: "[circular referenc
 ### Changelog
 
 ##### current:
+*  Add function convertSingleCommandLineArgumentToArray (Experimental)
+
+
+##### 1.13.6:
 *  Fix areEquals changing the content type for arrays of objects
 
 
