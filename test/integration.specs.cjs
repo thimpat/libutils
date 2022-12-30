@@ -82,7 +82,7 @@ describe("Integration: In the libUtils library", function ()
             expect(dir).to.be.false;
         });
 
-        it.skip("should return false when the path is not a string", async () =>
+        it("should return false when the path is not a string", async () =>
         {
             const dir = createAppDataDir(123);
             expect(dir).to.be.false;
