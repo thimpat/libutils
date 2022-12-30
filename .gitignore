@@ -72,3 +72,5 @@ dist
 /cjs/lib-utils.min.cjs
 /lib-utils.mjs
 /.run/
+/test/unit.specs.mjs
+/test/integration.specs.mjs
