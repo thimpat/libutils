@@ -5,7 +5,7 @@ const {
     areEquals, joinPath, normalisePath, getGlobalArguments, sleep, getLocalIp, getIps, convertToUrl, isObject,
     mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir,
     importLowerCaseOptions, changeOptionsToLowerCase, addPlural, convertStringArgumentToArray, generateTempName,
-    simplifyObject, stringifyObject, isJson, getIpList,
+    simplifyObject, stringifyObject, isJson, getIpList, convertSingleCommandLineArgumentToArray,
 } = require("../lib-utils.cjs");
 
 describe("Unit: In the libUtils library", function ()
@@ -1121,6 +1121,46 @@ describe("Unit: In the libUtils library", function ()
         });
     });
 
+    describe("The function convertSingleCommandLineArgumentToArray", () =>
+    {
+        it("should keep an array as it is", async () =>
+        {
+            const arr = convertSingleCommandLineArgumentToArray(["a1", "a2", "a3"]);
+            expect(arr).to.eql(["a1", "a2", "a3"]);
+        });
+
+        it("should convert a string representation of an array to an array", async () =>
+        {
+            const arr = convertSingleCommandLineArgumentToArray("[a1,a2,a3]");
+            expect(arr).to.eql(["a1", "a2", "a3"]);
+        });
+
+        it("should convert a string comma separated to an array", async () =>
+        {
+            const arr = convertSingleCommandLineArgumentToArray("a1,a2,a3");
+            expect(arr).to.eql(["a1", "a2", "a3"]);
+        });
+    });
+
+    describe("The function convertLineArgumentsToArray", () =>
+    {
+        it("should convert a command line string to an array", async () =>
+        {
+            const arr = convertStringArgumentToArray(
+                `'/Users/me/Chrome SxS/Application/chrome.exe' start --my-errors --aa=true -t okay cool now`
+            );
+            expect(arr).to.eql([
+                "/Users/me/Chrome SxS/Application/chrome.exe",
+                "start",
+                "--my-errors",
+                "--aa=true",
+                "-t",
+                "okay",
+                "cool",
+                "now"
+            ]);
+        });
+    });
 
 });
 
