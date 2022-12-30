@@ -25,7 +25,7 @@
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
     "sinon": "^14.0.0",
-    "to-esm": "^2.23.2"
+    "to-esm": "^2.26.5"
   },
   "module": "./lib-utils.mjs",
   "type": "module",
