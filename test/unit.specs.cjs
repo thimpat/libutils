@@ -1191,7 +1191,7 @@ describe("Unit: In the libUtils library", function ()
 
     });
 
-    describe(it "The function normaliseFileName", () =>
+    describe("The function normaliseFileName", () =>
     {
         it("should return a lower case path from a string", async () =>
         {
