@@ -3,7 +3,6 @@
  import chai from "chai";
  import sinon from "../node_modules/sinon/pkg/sinon-esm.js";
  import memfs from "memfs";
- import {createAppDataDir} from "../lib-utils.cjs";
  **/
 
 /** to-esm-all: remove **/
@@ -12,10 +11,10 @@ const fs = require("fs");
 const chai = require("chai");
 const sinon = require("sinon");
 const memfs = require("memfs");
-const {createAppDataDir} = require("../lib-utils.cjs");
 // ------------
 /** to-esm-all: end-remove **/
 
+const {createAppDataDir, getHashFromFile} = require("../lib-utils.cjs");
 
 const expect = chai.expect;
 
@@ -25,11 +24,13 @@ describe("Integration: In the libUtils library", function ()
 
     before(() =>
     {
+        process.chdir(__dirname);
+
         sinon.stub(fs, "mkdirSync").callsFake(function (path, data)
         {
             if (path && /<>/.test(path))
             {
-                // memory-fs does not throws an exception on illegal charact
+                // memory-fs does not throw an exception on illegal charact
                 throw {
                     errno  : -4058,
                     syscall: "mkdir",
@@ -89,6 +90,16 @@ describe("Integration: In the libUtils library", function ()
         });
 
     });
+
+    describe("The function getHashFromFile", () =>
+    {
+        it("should return a hash", async () =>
+        {
+            const result = await getHashFromFile("./fixtures/some-file.txt");
+            expect(result).to.eql("fb3ab51bc8f09401d9604600372b718d7994b301");
+        });
+    });
+
 });
 
 

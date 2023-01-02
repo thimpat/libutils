@@ -6,6 +6,7 @@ const {
     mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir,
     importLowerCaseOptions, changeOptionsToLowerCase, addPlural, convertStringArgumentToArray, generateTempName,
     simplifyObject, stringifyObject, isJson, getIpList, convertSingleCommandLineArgumentToArray, clone,
+    getHashFromText
 } = require("../lib-utils.cjs");
 
 describe("Unit: In the libUtils library", function ()
@@ -1174,6 +1175,18 @@ describe("Unit: In the libUtils library", function ()
         {
             const result = clone({aa: 1, bb: 2});
             expect(result).to.eql({aa: 1, bb: 2});
+        });
+
+    });
+
+    describe("The function getHashFromText", () =>
+    {
+        it("should return a hash from a string", async () =>
+        {
+            const result = await getHashFromText(
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do"
+            );
+            expect(result).to.eql("6945dfee7411a37b37cd6b0f47b0b282640df196");
         });
 
     });
