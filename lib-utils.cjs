@@ -30,6 +30,17 @@ const isItemInList = () =>
     throw new Error(`Obsolete function: Available in version 1.10.3`);
 };
 
+/**
+ * @obsolete
+ * Defined in v1.14.0
+ * @returns {string}
+ */
+const normaliseFileName = () =>
+{
+    throw new Error(`Obsolete function: Available in version 1.14.0`);
+};
+
+
 // ==================================================================
 // Browser incompatibles units
 // ==================================================================
@@ -432,23 +443,6 @@ function generateTempName({prefix = "", suffix = "", size = 16, replacementChar 
         suffix;
 }
 
-const normaliseFileName = (filename) =>
-{
-    try
-    {
-        if (!filename)
-        {
-            return "";
-        }
-
-        filename = filename.trim().toLowerCase();
-        return filename;
-    }
-    catch (e)
-    {
-        console.error(e);
-    }
-};
 
 /** to-esm-browser: remove **/
 /**
@@ -1783,8 +1777,9 @@ exports.getFileContent = getFileContent;
 exports.writeFileContent = writeFileContent;
 exports.getFilepathCopyName = getFilepathCopyName;
 exports.getHashFromFile = getHashFromFile;
-exports.getHashFromText = getHashFromText;
 /** to-esm-browser: end-remove **/
+
+exports.getHashFromText = getHashFromText;
 
 exports.loadJsonFile = loadJsonFile;
 exports.saveJsonFile = saveJsonFile;
