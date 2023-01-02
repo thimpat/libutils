@@ -1828,6 +1828,7 @@ exports.getDataDir = getDataDir;
 exports.getAppDataDir = getAppDataDir;
 exports.createAppDataDir = createAppDataDir;
 exports.isConventionalFolder = isConventionalFolder;
+exports.normaliseFileName = normaliseFileName;
 
 /** to-esm-browser: remove **/
 exports.resolvePath = resolvePath;
@@ -1857,7 +1858,6 @@ exports.getLocalIp = getLocalIp;
 
 // Obsolete
 exports.getGlobalArguments = getGlobalArguments;
-exports.normaliseFileName = normaliseFileName;
 exports.convertSessionKeyNameToArg = convertSessionKeyNameToArg;
 exports.convertSessionToArg = convertSessionToArg;
 
