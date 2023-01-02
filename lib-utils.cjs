@@ -27,17 +27,7 @@ const getGlobalArguments = function ()
  */
 const isItemInList = () =>
 {
-    throw new Error(`Obsolete function: Available in version 1.10.3`);
-};
-
-/**
- * @obsolete
- * Defined in v1.14.0
- * @returns {string}
- */
-const normaliseFileName = () =>
-{
-    throw new Error(`Obsolete function: Available in version 1.14.0`);
+    throw new Error(`Obsolete function: [${isItemInList.name}] is available in version 1.10.3`);
 };
 
 /**
@@ -463,6 +453,27 @@ function generateTempName({prefix = "", suffix = "", size = 16, replacementChar 
         suffix;
 }
 
+const normaliseFileName = (filename, {isLowerCase = true}) =>
+{
+    try
+    {
+        if (!filename)
+        {
+            return "";
+        }
+
+        filename = filename.trim();
+        if (isLowerCase)
+        {
+            filename = filename.toLowerCase();
+        }
+        return filename;
+    }
+    catch (e)
+    {
+        console.error(e);
+    }
+};
 
 /** to-esm-browser: remove **/
 /**
