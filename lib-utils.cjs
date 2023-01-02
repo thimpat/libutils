@@ -1764,7 +1764,23 @@ const isJson = (str) =>
 
 const clone = function (source)
 {
-    return JSON.parse(JSON.stringify(source));
+    let result;
+    try
+    {
+        const str = JSON.stringify(source);
+        if (!str)
+        {
+            return source;
+        }
+
+        result = JSON.parse(str);
+    }
+    catch (e)
+    {
+        console.error({lid: 2119}, e.message);
+    }
+
+    return result;
 };
 
 exports.clone = clone;
