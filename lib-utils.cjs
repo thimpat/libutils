@@ -18,7 +18,7 @@ const {execSync} = require("child_process");
  */
 const getGlobalArguments = function ()
 {
-    throw new Error(`Obsolete function: Available in version 1.9.3`);
+    throw new Error(`Obsolete function: [${getGlobalArguments.name}] is available in version 1.9.3`);
 };
 
 /**
@@ -37,7 +37,7 @@ const isItemInList = () =>
  */
 const convertSessionKeyNameToArg = () =>
 {
-    throw new Error(`Obsolete function: Available in version 1.14.0`);
+    throw new Error(`Obsolete function: [${convertSessionKeyNameToArg.name}] is available in version 1.14.0`);
 };
 
 /**
