@@ -6,7 +6,7 @@ const {
     mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir,
     importLowerCaseOptions, changeOptionsToLowerCase, addPlural, convertStringArgumentToArray, generateTempName,
     simplifyObject, stringifyObject, isJson, getIpList, convertSingleCommandLineArgumentToArray, clone,
-    getHashFromText
+    getHashFromText, normaliseFileName
 } = require("../lib-utils.cjs");
 
 describe("Unit: In the libUtils library", function ()
@@ -1187,6 +1187,26 @@ describe("Unit: In the libUtils library", function ()
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do"
             );
             expect(result).to.eql("6945dfee7411a37b37cd6b0f47b0b282640df196");
+        });
+
+    });
+
+    describe(it "The function normaliseFileName", () =>
+    {
+        it("should return a lower case path from a string", async () =>
+        {
+            const result = await normaliseFileName(
+                "C:/where/is/it/"
+            );
+            expect(result).to.eql("c:/where/is/it/");
+        });
+
+        it("should return a path from a string", async () =>
+        {
+            const result = await normaliseFileName(
+                "C:/where/is/it/", {isLowerCase: false}
+            );
+            expect(result).to.eql("C:/where/is/it/");
         });
 
     });
