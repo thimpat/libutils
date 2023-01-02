@@ -1736,7 +1736,7 @@ const clone = function (source)
     return JSON.parse(JSON.stringify(source));
 };
 
-module.exports.clone = clone;
+exports.clone = clone;
 
 
 // Generic functions
@@ -1765,6 +1765,7 @@ exports.getCommon = getCommon;
 exports.getCommonDir = getCommonDir;
 exports.addPlural = addPlural;
 exports.isJson = isJson;
+exports.getHashFromText = getHashFromText;
 
 // URL related functions
 exports.convertToUrl = convertToUrl;
@@ -1778,8 +1779,6 @@ exports.writeFileContent = writeFileContent;
 exports.getFilepathCopyName = getFilepathCopyName;
 exports.getHashFromFile = getHashFromFile;
 /** to-esm-browser: end-remove **/
-
-exports.getHashFromText = getHashFromText;
 
 exports.loadJsonFile = loadJsonFile;
 exports.saveJsonFile = saveJsonFile;
