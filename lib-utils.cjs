@@ -453,7 +453,7 @@ function generateTempName({prefix = "", suffix = "", size = 16, replacementChar 
         suffix;
 }
 
-const normaliseFileName = (filename, {isLowerCase = true}) =>
+const normaliseFileName = (filename, {isLowerCase = true} = {}) =>
 {
     try
     {
