@@ -5,7 +5,8 @@ const {
     areEquals, joinPath, normalisePath, getGlobalArguments, sleep, getLocalIp, getIps, convertToUrl, isObject,
     mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir,
     importLowerCaseOptions, changeOptionsToLowerCase, addPlural, convertStringArgumentToArray, generateTempName,
-    simplifyObject, stringifyObject, isJson, getIpList, convertSingleCommandLineArgumentToArray,
+    simplifyObject, stringifyObject, isJson, getIpList, convertSingleCommandLineArgumentToArray, clone,
+    getHashFromText, normaliseFileName
 } = require("../lib-utils.cjs");
 
 describe("Unit: In the libUtils library", function ()
@@ -16,7 +17,7 @@ describe("Unit: In the libUtils library", function ()
     {
         it("should throw an exception when used", () =>
         {
-            expect(getGlobalArguments).to.throw("Obsolete function: Available in version 1.9.3");
+            expect(getGlobalArguments).to.throw("Obsolete function: [getGlobalArguments] is available in version 1.9.3");
         });
     });
 
@@ -24,7 +25,7 @@ describe("Unit: In the libUtils library", function ()
     {
         it("should throw an exception when used", () =>
         {
-            expect(isItemInList).to.throw("Obsolete function: Available in version 1.10.3");
+            expect(isItemInList).to.throw("Obsolete function: [isItemInList] is available in version 1.10.3");
         });
     });
 
@@ -1160,6 +1161,54 @@ describe("Unit: In the libUtils library", function ()
                 "now"
             ]);
         });
+    });
+
+    describe("The function clone", () =>
+    {
+        it("should return the same primitive as the input in", () =>
+        {
+            const result = clone(null);
+            expect(result).to.equal(null);
+        });
+
+        it("should return the same object as the one entered", () =>
+        {
+            const result = clone({aa: 1, bb: 2});
+            expect(result).to.eql({aa: 1, bb: 2});
+        });
+
+    });
+
+    describe("The function getHashFromText", () =>
+    {
+        it("should return a hash from a string", async () =>
+        {
+            const result = await getHashFromText(
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do"
+            );
+            expect(result).to.eql("6945dfee7411a37b37cd6b0f47b0b282640df196");
+        });
+
+    });
+
+    describe("The function normaliseFileName", () =>
+    {
+        it("should return a lower case path from a string", async () =>
+        {
+            const result = await normaliseFileName(
+                "C:/where/is/it/"
+            );
+            expect(result).to.eql("c:/where/is/it/");
+        });
+
+        it("should return a path from a string", async () =>
+        {
+            const result = await normaliseFileName(
+                "C:/where/is/it/", {isLowerCase: false}
+            );
+            expect(result).to.eql("C:/where/is/it/");
+        });
+
     });
 
 });

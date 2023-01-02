@@ -16,10 +16,10 @@ const {execSync} = require("child_process");
 /**
  * @obsolete
  */
-const getGlobalArguments = (function ()
+const getGlobalArguments = function ()
 {
-    throw new Error(`Obsolete function: Available in version 1.9.3`);
-});
+    throw new Error(`Obsolete function: [${getGlobalArguments.name}] is available in version 1.9.3`);
+};
 
 /**
  * @obsolete Use built-in includes
@@ -27,8 +27,29 @@ const getGlobalArguments = (function ()
  */
 const isItemInList = () =>
 {
-    throw new Error(`Obsolete function: Available in version 1.10.3`);
+    throw new Error(`Obsolete function: [${isItemInList.name}] is available in version 1.10.3`);
 };
+
+/**
+ * @obsolete
+ * Defined in v1.14.0
+ * @returns {string}
+ */
+const convertSessionKeyNameToArg = () =>
+{
+    throw new Error(`Obsolete function: [${convertSessionKeyNameToArg.name}] is available in version 1.14.0`);
+};
+
+/**
+ * @obsolete
+ * Defined in v1.14.0
+ * @returns {string}
+ */
+const convertSessionToArg = () =>
+{
+    throw new Error(`Obsolete function: Available in version 1.14.0`);
+};
+
 
 // ==================================================================
 // Browser incompatibles units
@@ -432,121 +453,7 @@ function generateTempName({prefix = "", suffix = "", size = 16, replacementChar 
         suffix;
 }
 
-/**
- * Convert a session key property into a CLI argument
- * @example
- *
- * convertSessionKeyNameToArg("staticDirs", ["./", "./public"])
- * // ["--dir", "./", "--dir", "./public"]
- *
- * convertSessionKeyNameToArg("silent")
- * // ["--silent"]
- *
- * convertSessionKeyNameToArg("enableapi", false)
- * // ["--disableapi"]
- * convertSessionKeyNameToArg("enableapi", true)
- * // []
- *
- * convertSessionKeyNameToArg("port", 3000)
- * // ["--port", 3000]
- *
- * convertSessionKeyNameToArg("defaultPage", "index.html")
- * // ["--defaultpage", "index.html"]
- *
- * @param key
- * @param value
- * @returns {(string|*)[]|*[]|*}
- */
-const convertSessionKeyNameToArg = (key, value = undefined) =>
-{
-    const table = {
-        port       : "port",
-        protocol   : "protocol",
-        timeout    : "timeout",
-        host       : "host",
-        defaultPage: "defaultpage",
-        silent     : () => ["--silent"],
-        staticDirs : (inputs) =>
-        {
-            const arr = [];
-            inputs.forEach((input) =>
-            {
-                arr.push("--dir");
-                arr.push(input);
-            });
-            return arr;
-        },
-        enableapi  : (input) =>
-        {
-            if (!input)
-            {
-                return ["--disableapi"];
-            }
-
-            return [];
-        }
-    };
-
-    let arg = table[key];
-    if (!arg)
-    {
-        return [];
-    }
-
-    if (typeof arg === "function")
-    {
-        return arg(value);
-    }
-
-    const option = `--${arg}`;
-    return [option, value];
-};
-
-/**
- * Convert session properties to CLI array
- * @param session
- * @param argv
- * @param scriptPath
- * @param command
- * @param target
- * @returns {*}
- */
-const convertSessionToArg = (session, argv, {scriptPath = "", command = "", target = ""} = {}) =>
-{
-    const argumentsFromSession = argv.slice(0, 1);
-
-    if (scriptPath)
-    {
-        if (!fs.existsSync(scriptPath))
-        {
-            throw new Error(`[${scriptPath}] could not be found`);
-        }
-
-        argumentsFromSession.push(scriptPath);
-    }
-
-    if (command)
-    {
-        argumentsFromSession.push(command);
-        if (target)
-        {
-            argumentsFromSession.push(target);
-        }
-    }
-
-    for (const [key, values] of Object.entries(session))
-    {
-        const res = convertSessionKeyNameToArg(key, values);
-        if (!res || !res.length)
-        {
-            continue;
-        }
-        argumentsFromSession.push(...res);
-    }
-    return argumentsFromSession;
-};
-
-const normaliseFileName = (filename) =>
+const normaliseFileName = (filename, {isLowerCase = true} = {}) =>
 {
     try
     {
@@ -555,7 +462,11 @@ const normaliseFileName = (filename) =>
             return "";
         }
 
-        filename = filename.trim().toLowerCase();
+        filename = filename.trim();
+        if (isLowerCase)
+        {
+            filename = filename.toLowerCase();
+        }
         return filename;
     }
     catch (e)
@@ -693,6 +604,59 @@ const getFilesizeInBytes = (file) =>
 const getFileContent = function (filepath, options = {encoding: "utf-8"})
 {
     return fs.readFileSync(filepath, options);
+};
+
+const getHashFromText = (text) =>
+{
+    try
+    {
+        const hash = crypto.createHash("sha1");
+        hash.setEncoding("hex");
+        hash.write(text);
+        hash.end();
+        return hash.read();
+    }
+    catch (e)
+    {
+        console.error({lid: 1000}, e.message);
+    }
+
+    return null;
+};
+
+
+/**
+ * Return hash of a file
+ * @see https://stackoverflow.com/questions/18658612/obtaining-the-hash-of-a-file-using-the-stream-capabilities-of-crypto-module-ie
+ * @param filepath
+ * @returns {Promise<unknown>}
+ */
+const getHashFromFile  = (filepath) =>
+{
+    return new Promise((resolve, reject) =>
+    {
+        try
+        {
+            const fd = fs.createReadStream(filepath);
+            const hash = crypto.createHash("sha1");
+            hash.setEncoding("hex");
+
+            hash.on("finish", function ()
+            {
+                hash.end();
+                const uid = hash.read();
+                resolve(uid);
+            });
+
+            fd.pipe(hash);
+        }
+        catch (e)
+        {
+            console.error({lid: 1000}, e.message);
+            reject(e);
+        }
+    });
+
 };
 
 /**
@@ -1798,6 +1762,13 @@ const isJson = (str) =>
     return false;
 };
 
+const clone = function (source)
+{
+    return JSON.parse(JSON.stringify(source));
+};
+
+exports.clone = clone;
+
 
 // Generic functions
 exports.convertArrayToObject = convertArrayToObject;
@@ -1807,8 +1778,6 @@ exports.convertSingleCommandLineArgumentToArray = convertSingleCommandLineArgume
 
 exports.mergeDeep = mergeDeep;
 exports.sleep = sleep;
-exports.convertSessionKeyNameToArg = convertSessionKeyNameToArg;
-exports.convertSessionToArg = convertSessionToArg;
 exports.isItemInList = isItemInList;
 exports.doNothing = doNothing;
 exports.isObject = isObject;
@@ -1827,6 +1796,7 @@ exports.getCommon = getCommon;
 exports.getCommonDir = getCommonDir;
 exports.addPlural = addPlural;
 exports.isJson = isJson;
+exports.getHashFromText = getHashFromText;
 
 // URL related functions
 exports.convertToUrl = convertToUrl;
@@ -1838,11 +1808,11 @@ exports.getFilesizeInBytes = getFilesizeInBytes;
 exports.getFileContent = getFileContent;
 exports.writeFileContent = writeFileContent;
 exports.getFilepathCopyName = getFilepathCopyName;
+exports.getHashFromFile = getHashFromFile;
 /** to-esm-browser: end-remove **/
 
 exports.loadJsonFile = loadJsonFile;
 exports.saveJsonFile = saveJsonFile;
-exports.normaliseFileName = normaliseFileName;
 
 // Profiling Related functions
 exports.getCallInfo = getCallInfo;
@@ -1858,6 +1828,7 @@ exports.getDataDir = getDataDir;
 exports.getAppDataDir = getAppDataDir;
 exports.createAppDataDir = createAppDataDir;
 exports.isConventionalFolder = isConventionalFolder;
+exports.normaliseFileName = normaliseFileName;
 
 /** to-esm-browser: remove **/
 exports.resolvePath = resolvePath;
@@ -1887,5 +1858,7 @@ exports.getLocalIp = getLocalIp;
 
 // Obsolete
 exports.getGlobalArguments = getGlobalArguments;
+exports.convertSessionKeyNameToArg = convertSessionKeyNameToArg;
+exports.convertSessionToArg = convertSessionToArg;
 
 
