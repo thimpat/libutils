@@ -695,6 +695,59 @@ const getFileContent = function (filepath, options = {encoding: "utf-8"})
     return fs.readFileSync(filepath, options);
 };
 
+const getHashFromText = (text) =>
+{
+    try
+    {
+        const hash = crypto.createHash("sha1");
+        hash.setEncoding("hex");
+        hash.write(text);
+        hash.end();
+        return hash.read();
+    }
+    catch (e)
+    {
+        console.error({lid: 1000}, e.message);
+    }
+
+    return null;
+};
+
+
+/**
+ * Return hash of a file
+ * @see https://stackoverflow.com/questions/18658612/obtaining-the-hash-of-a-file-using-the-stream-capabilities-of-crypto-module-ie
+ * @param filepath
+ * @returns {Promise<unknown>}
+ */
+const getHashFromFile  = (filepath) =>
+{
+    return new Promise((resolve, reject) =>
+    {
+        try
+        {
+            const fd = fs.createReadStream(filepath);
+            const hash = crypto.createHash("sha1");
+            hash.setEncoding("hex");
+
+            hash.on("finish", function ()
+            {
+                hash.end();
+                const uid = hash.read();
+                resolve(uid);
+            });
+
+            fd.pipe(hash);
+        }
+        catch (e)
+        {
+            console.error({lid: 1000}, e.message);
+            reject(e);
+        }
+    });
+
+};
+
 /**
  * @alias fs.writeFileSync
  * @param filepath
@@ -1838,6 +1891,8 @@ exports.getFilesizeInBytes = getFilesizeInBytes;
 exports.getFileContent = getFileContent;
 exports.writeFileContent = writeFileContent;
 exports.getFilepathCopyName = getFilepathCopyName;
+exports.getHashFromFile = getHashFromFile;
+exports.getHashFromText = getHashFromText;
 /** to-esm-browser: end-remove **/
 
 exports.loadJsonFile = loadJsonFile;
