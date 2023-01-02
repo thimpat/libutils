@@ -16,10 +16,10 @@ const {execSync} = require("child_process");
 /**
  * @obsolete
  */
-const getGlobalArguments = (function ()
+const getGlobalArguments = function ()
 {
     throw new Error(`Obsolete function: Available in version 1.9.3`);
-});
+};
 
 /**
  * @obsolete Use built-in includes
@@ -36,6 +36,26 @@ const isItemInList = () =>
  * @returns {string}
  */
 const normaliseFileName = () =>
+{
+    throw new Error(`Obsolete function: Available in version 1.14.0`);
+};
+
+/**
+ * @obsolete
+ * Defined in v1.14.0
+ * @returns {string}
+ */
+const convertSessionKeyNameToArg = () =>
+{
+    throw new Error(`Obsolete function: Available in version 1.14.0`);
+};
+
+/**
+ * @obsolete
+ * Defined in v1.14.0
+ * @returns {string}
+ */
+const convertSessionToArg = () =>
 {
     throw new Error(`Obsolete function: Available in version 1.14.0`);
 };
@@ -1782,7 +1802,6 @@ exports.getHashFromFile = getHashFromFile;
 
 exports.loadJsonFile = loadJsonFile;
 exports.saveJsonFile = saveJsonFile;
-exports.normaliseFileName = normaliseFileName;
 
 // Profiling Related functions
 exports.getCallInfo = getCallInfo;
@@ -1827,5 +1846,8 @@ exports.getLocalIp = getLocalIp;
 
 // Obsolete
 exports.getGlobalArguments = getGlobalArguments;
+exports.normaliseFileName = normaliseFileName;
+exports.convertSessionKeyNameToArg = convertSessionKeyNameToArg;
+exports.convertSessionToArg = convertSessionToArg;
 
 
