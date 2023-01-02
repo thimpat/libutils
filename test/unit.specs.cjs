@@ -17,7 +17,7 @@ describe("Unit: In the libUtils library", function ()
     {
         it("should throw an exception when used", () =>
         {
-            expect(getGlobalArguments).to.throw("Obsolete function: Available in version 1.9.3");
+            expect(getGlobalArguments).to.throw("Obsolete function: [getGlobalArguments] is available in version 1.9.3");
         });
     });
 
@@ -25,7 +25,7 @@ describe("Unit: In the libUtils library", function ()
     {
         it("should throw an exception when used", () =>
         {
-            expect(isItemInList).to.throw("Obsolete function: Available in version 1.10.3");
+            expect(isItemInList).to.throw("Obsolete function: [isItemInList] is available in version 1.10.3");
         });
     });
 

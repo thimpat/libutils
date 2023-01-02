@@ -96,7 +96,7 @@ describe("Integration: In the libUtils library", function ()
         it("should return a hash", async () =>
         {
             const result = await getHashFromFile("./fixtures/some-file.txt");
-            expect(result).to.eql("fb3ab51bc8f09401d9604600372b718d7994b301");
+            expect(result).to.eql("33672ae924f4139a0c4a9358cc55277cec9dd357");
         });
     });
 
