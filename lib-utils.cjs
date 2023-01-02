@@ -1851,6 +1851,13 @@ const isJson = (str) =>
     return false;
 };
 
+const clone = function (source)
+{
+    return JSON.parse(JSON.stringify(source));
+};
+
+module.exports.clone = clone;
+
 
 // Generic functions
 exports.convertArrayToObject = convertArrayToObject;
