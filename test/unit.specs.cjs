@@ -5,7 +5,7 @@ const {
     areEquals, joinPath, normalisePath, getGlobalArguments, sleep, getLocalIp, getIps, convertToUrl, isObject,
     mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir,
     importLowerCaseOptions, changeOptionsToLowerCase, addPlural, convertStringArgumentToArray, generateTempName,
-    simplifyObject, stringifyObject, isJson, getIpList, convertSingleCommandLineArgumentToArray,
+    simplifyObject, stringifyObject, isJson, getIpList, convertSingleCommandLineArgumentToArray, clone,
 } = require("../lib-utils.cjs");
 
 describe("Unit: In the libUtils library", function ()
@@ -1160,6 +1160,22 @@ describe("Unit: In the libUtils library", function ()
                 "now"
             ]);
         });
+    });
+
+    describe("The function clone", () =>
+    {
+        it("should return the same primitive as the input in", () =>
+        {
+            const result = clone(null);
+            expect(result).to.equal(null);
+        });
+
+        it("should return the same object as the one entered", () =>
+        {
+            const result = clone({aa: 1, bb: 2});
+            expect(result).to.eql({aa: 1, bb: 2});
+        });
+
     });
 
 });
