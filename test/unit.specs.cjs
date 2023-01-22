@@ -6,12 +6,17 @@ const {
     mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir,
     importLowerCaseOptions, changeOptionsToLowerCase, addPlural, convertStringArgumentToArray, generateTempName,
     simplifyObject, stringifyObject, isJson, getIpList, convertSingleCommandLineArgumentToArray, clone,
-    getHashFromText, normaliseFileName
+    getHashFromText, normaliseFileName, isDirectory, isFile, isSymbolicLink
 } = require("../lib-utils.cjs");
 
 describe("Unit: In the libUtils library", function ()
 {
     this.timeout(5000);
+
+    before(() =>
+    {
+        process.chdir(__dirname);
+    });
 
     describe("The function getGlobalArguments", () =>
     {
@@ -1209,6 +1214,51 @@ describe("Unit: In the libUtils library", function ()
             expect(result).to.eql("C:/where/is/it/");
         });
 
+    });
+
+    describe("The function isDirectory", () =>
+    {
+        it("should return true if given path is a string", async () =>
+        {
+            const result = isDirectory("./fixtures");
+            expect(result).to.equal(true);
+        });
+
+        it("should return false if given path is a string", async () =>
+        {
+            const result = isDirectory("./integration.specs.cjs");
+            expect(result).to.equal(false);
+        });
+    });
+
+    describe("The function isFile", () =>
+    {
+        it("should return true if given path is a string", async () =>
+        {
+            const result = isFile("./fixtures");
+            expect(result).to.equal(false);
+        });
+
+        it("should return false if given path is a string", async () =>
+        {
+            const result = isFile("./integration.specs.cjs");
+            expect(result).to.equal(true);
+        });
+    });
+
+    describe("The function isSymbolicLink", () =>
+    {
+        it("should return true if given path is a string", async () =>
+        {
+            const result = isSymbolicLink("./fixtures");
+            expect(result).to.equal(false);
+        });
+
+        it("should return false if given path is a string", async () =>
+        {
+            const result = isSymbolicLink("./integration.specs.cjs");
+            expect(result).to.equal(false);
+        });
     });
 
 });
