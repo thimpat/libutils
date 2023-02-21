@@ -6,7 +6,7 @@ const {
     mergeDeep, convertArrayToObject, isItemInList, getCommonDir, getCommon, calculateCommon, getAppDataDir,
     importLowerCaseOptions, changeOptionsToLowerCase, addPlural, convertStringArgumentToArray, generateTempName,
     simplifyObject, stringifyObject, isJson, getIpList, convertSingleCommandLineArgumentToArray, clone,
-    getHashFromText, normaliseFileName, isDirectory, isFile, isSymbolicLink
+    getHashFromText, normaliseFileName, isDirectory, isFile, isSymbolicLink, getAppTempDir
 } = require("../lib-utils.cjs");
 
 describe("Unit: In the libUtils library", function ()
@@ -1258,6 +1258,27 @@ describe("Unit: In the libUtils library", function ()
         {
             const result = isSymbolicLink("./integration.specs.cjs");
             expect(result).to.equal(false);
+        });
+    });
+
+    describe("The function getAppTempDir", () =>
+    {
+        it("should return the path to a temporary directory with a subdirectory", async () =>
+        {
+            const result = getAppTempDir({appName: "myApp", subDir: "mysubdir"});
+            expect(result).to.contain("Local/Temp/myApp/mysubdir");
+        });
+
+        it("should return the path to a temporary directory", async () =>
+        {
+            const result = getAppTempDir({appName: "myApp"});
+            expect(result).to.contain("Local/Temp/myApp");
+        });
+
+        it("should return the path to a temporary directory when no appName is passed", async () =>
+        {
+            const result = getAppTempDir({});
+            expect(result).to.contain("Local/Temp");
         });
     });
 
