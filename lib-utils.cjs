@@ -1008,6 +1008,21 @@ const getAppDataDir = (appName) =>
     return null;
 };
 
+const isDirectory = function (dir)
+{
+    return fs.statSync(dir).isDirectory();
+};
+
+const isFile = function (filepath)
+{
+    return fs.statSync(filepath).isFile();
+};
+
+const isSymbolicLink = function (filepath)
+{
+    return fs.statSync(filepath).isSymbolicLink();
+};
+
 /**
  *
  * @returns {boolean}
@@ -1036,6 +1051,29 @@ const createAppDataDir = (appName) =>
     }
 
     return false;
+};
+
+/**
+ * Do not call directly. Call createAppTempDir instead
+ * @param subDir
+ * @returns {*}
+ */
+const getAppTempDir = ({appName = "", subDir = ""} = {}) =>
+{
+    const tmpDir = os.tmpdir();
+    return joinPath(tmpDir, appName, subDir);
+};
+
+const createAppTempDir = ({appName, subDir = ""} = {}) =>
+{
+    if (!appName)
+    {
+        throw new Error(`Invalid name. Cannot create temporary directory`);
+    }
+
+    const tempDir = getAppTempDir({appName, subDir});
+    fs.mkdirSync(tempDir, {recursive: true});
+    return tempDir;
 };
 
 const getStackLineInfo = function (line)
@@ -1855,7 +1893,15 @@ exports.calculateRelativePath = calculateRelativePath;
 exports.normaliseRealPath = normaliseRealPath;
 exports.normaliseRealPathV2 = normaliseRealPathV2;
 exports.getRelativePath = getRelativePath;
+
+module.exports.isDirectory = isDirectory;
+module.exports.isFile = isFile;
+module.exports.isSymbolicLink = isSymbolicLink;
+
+module.exports.getAppTempDir = getAppTempDir;
+module.exports.createAppTempDir = createAppTempDir;
 /** to-esm-browser: end-remove **/
+
 exports.calculateCommon = calculateCommon;
 
 // Package related functions
