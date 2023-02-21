@@ -285,7 +285,39 @@ const obj = simplifyObject(obj1);       // {a:1, b:2, c: {d: "[circular referenc
 ### Changelog
 
 ##### current:
-*  Add function convertSingleCommandLineArgumentToArray (Experimental)
+*  Add functions getAppTempDir() and createAppTempDir()
+
+
+##### 1.16.0:
+*  Add functions isDirectory, isFile and isSymbolicLink
+
+
+##### 1.15.8:
+*  Fix clone function when source is falsy
+
+
+##### 1.15.6:
+*  Fix normaliseFileName function (tested)
+
+
+##### 1.15.5:
+*  Fix normaliseFileName function
+
+
+##### 1.15.4:
+*  Review error message for obsolete functions
+*  Restore function [normaliseFileName]
+
+
+##### 1.15.0:
+*  Remove two obsolete functions: convertSessionToArg & convertSessionKeyNameToArg
+*  Add function clone
+*  Add functions getHashFromText and getHashFromFile
+
+
+##### 1.14.0:
+*  Add function convertStringArgumentToArray
+*  Add function convertSingleCommandLineArgumentToArray
 
 
 ##### 1.13.6:
