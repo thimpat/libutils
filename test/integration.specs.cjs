@@ -14,7 +14,7 @@ const memfs = require("memfs");
 // ------------
 /** to-esm-all: end-remove **/
 
-const {createAppDataDir, getHashFromFile} = require("../lib-utils.cjs");
+const {createAppDataDir, getHashFromFile, createAppTempDir} = require("../lib-utils.cjs");
 
 const expect = chai.expect;
 
@@ -97,6 +97,26 @@ describe("Integration: In the libUtils library", function ()
         {
             const result = await getHashFromFile("./fixtures/some-file.txt");
             expect(result).to.eql("33672ae924f4139a0c4a9358cc55277cec9dd357");
+        });
+    });
+
+    describe("The function createAppTempDir", () =>
+    {
+        it("should create a temporary directory", async () =>
+        {
+            const result = await createAppTempDir({appName: "myapp"});
+            expect(fs.existsSync(result)).to.equal(true);
+        });
+
+       it("should create a  subdirectory into a temporary directory", async () =>
+        {
+            const result = await createAppTempDir({appName: "myapp", subDir: "mysubdir"});
+            expect(fs.existsSync(result)).to.equal(true);
+        });
+
+       it("should throw an exception", async () =>
+        {
+            expect(await createAppTempDir.bind(null,{})).to.throw("Cannot create temporary directory");
         });
     });
 
